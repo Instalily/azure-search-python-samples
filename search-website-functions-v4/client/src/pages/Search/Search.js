@@ -7,7 +7,8 @@ import Results from '../../components/Results/Results';
 import Pager from '../../components/Pager/Pager';
 import Facets from '../../components/Facets/Facets';
 import SearchBar from '../../components/SearchBar/SearchBar';
-
+import logo from '../../images/partselect.svg';
+import "../../components/SearchBar/SearchBar.css"
 import "./Search.css";
 import { searchResponse } from '../../components/TestResponse';
 
@@ -25,50 +26,54 @@ export default function Search() {
   const [ filters, setFilters ] = useState([]);
   const [ facets, setFacets ] = useState({});
   const [ isLoading, setIsLoading ] = useState(true);
-
+  const [ preSelectedFilters, setPreSelectedFilters ] = useState([]);
+  const [ preSelectedFlag, setPreSelectedFlag] = useState(false);
   let resultsPerPage = top;
   
   useEffect(() => {
-    setIsLoading(true);
-    setSkip((currentPage-1) * top);
-    setResults(searchResponse.results);
-    setFacets(searchResponse.facets);
-    setResultCount(searchResponse.count);
-    setIsLoading(false);
-    // const body = {
-    //   q: q,
-    //   top: top,
-    //   skip: skip,
-    //   filters: filters
-    // };
-
-    // axios.post( 'https://witty-hill-0f88f920f.4.azurestaticapps.net/api/search', body)
-    //   .then(response => {
-    //         console.log(JSON.stringify(response.data))
-    //         setResults(response.data.results);
-    //         setFacets(response.data.facets);
-    //         setResultCount(response.data.count);
-    //         setIsLoading(false);
-    //     } )
-    //     .catch(error => {
-    //         console.log(error);
-    //         setIsLoading(false);
-    //     });
-    
+      setIsLoading(true);
+      setSkip((currentPage-1) * top);
+      const body = {
+        q: q,
+        top: top,
+        skip: skip,
+        filters: filters,
+        // fuzzy: true
+      };
+      if (filters === preSelectedFilters && preSelectedFlag===true) {
+        setIsLoading(false);
+      }
+      else {
+        axios.post('https://instaagentsearch-mwvqt7kpva-uc.a.run.app/search', body)
+            .then(response => {
+              // console.log(JSON.stringify(response.data))
+              setResults(response.data.results);
+              setFacets(response.data.facets);
+              setResultCount(response.data.count);
+              if (!preSelectedFlag) {
+                setPreSelectedFilters(response.data.preselectedFilters);
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+            setIsLoading(false); 
+      }
   }, [q, top, skip, filters, currentPage]);
 
-  // pushing the new search term to history when q is updated
-  // allows the back button to work as expected when coming back from the details page
+  useEffect(() => {
+    setFilters(preSelectedFilters);
+    setPreSelectedFlag(true);
+  }, [preSelectedFilters]);
+
   useEffect(() => {
     navigate('/search?q=' + q);  
     setCurrentPage(1);
     setFilters([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
 
 
   let postSearchHandler = (searchTerm) => {
-    //console.log(searchTerm);
     setQ(searchTerm);
   }
 
@@ -81,26 +86,40 @@ export default function Search() {
   } else {
     body = (
       <div className="col-md-9">
-        <Results documents={results} top={top} skip={skip} count={resultCount}></Results>
+        <Results documents={results} top={top} skip={skip} count={resultCount} q={q}></Results>
         <Pager className="pager-style" currentPage={currentPage} resultCount={resultCount} resultsPerPage={resultsPerPage} setCurrentPage={setCurrentPage}></Pager>
       </div>
     )
   }
 
   return (
+    <div>
+    <header className="header">
+      <nav className="navbar navbar-expand-lg">
+        <a className="navbar-brand" href="/">
+          <img src={logo} height="50" className="navbar-logo" alt="Microsoft" />
+        </a>
+        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        </div>
+      </nav>
+    </header>
+    <div className="search-bar-container-searchpage">
+      <div className="search-bar-searchpage">
+      <SearchBar onSearchHandler={postSearchHandler} page="searchpage"></SearchBar>
+      </div>
+    </div>
     <main className="main main--search container-fluid">
       <div className="row">
-        {/* <div style={{"width": "60%", "alignContent": "center"}}> */}
-          <SearchBar postSearchHandler={() => {}}></SearchBar>
-        {/* </div> */}
         <div className="col-md-3"> 
-          {/* <div className="search-bar"> */}
-            {/* <SearchBar postSearchHandler={postSearchHandler} q={q}></SearchBar> */}
-          {/* </div> */}
-          <Facets facets={facets} filters={filters} setFilters={setFilters}></Facets>
+          <Facets facets={facets} filters={filters} preSelectedFilters={preSelectedFilters} setFilters={setFilters}></Facets>
         </div>
         {body}
       </div>
     </main>
+    </div>
   );
 }

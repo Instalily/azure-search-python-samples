@@ -27,6 +27,7 @@ export default function Facets(props) {
     }
 
     var facets;
+
     try{
         facets = Object.keys(props.facets).map(key => {
             return <CheckboxFacet 
@@ -53,11 +54,20 @@ export default function Facets(props) {
               />
             </li>);
           });
-
+    const clearFilters = () =>{
+        if(filters && filters.length > 0) {
+            props.setFilters([])
+        }
+    }
 
     return (
-        <div id="facetPanel" className="box">
-            <div className="facetbox">
+        <div id="facetPanel" className="box">          
+                <div className="facetbox">
+                <div 
+                    style={{ width: '100%', textAlign: 'left', cursor: "pointer"}}
+                    onClick={clearFilters}>
+                        <u>Clear filters</u>
+                </div>  
                 <div id="clearFilters">
                 <ul className="filterlist">
                     {filters}
@@ -65,7 +75,7 @@ export default function Facets(props) {
                 </div>
                 <FacetList component="nav" className="listitem" >
                     {facets}
-                </FacetList>    
+                </FacetList>
             </div>
         </div>
     );
