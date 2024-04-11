@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { List, Chip } from '@mui/material';
 import CheckboxFacet from './CheckboxFacet/CheckboxFacet';
 import styled from 'styled-components';
 import "./Facets.css";
 
 export default function Facets(props) {
+    const [selectedModel, setSelectedModel] = useState(null);
 
     function mapFacetName(facetName) {
         const capitalizeFirstLetter = (string) =>
@@ -52,14 +53,23 @@ export default function Facets(props) {
                     onDelete={() => removeFilter(filter)}
                     className="chip"
               />
-            </li>);
+            </li>
+            );
           });
     const clearFilters = () =>{
         if(filters && filters.length > 0) {
             props.setFilters([])
         }
-    }
 
+    }
+    const handleModelChange = (event, model) => {
+        if (selectedModel === model) {
+            setSelectedModel(null);
+            event.target.checked = false;
+          } else {
+            setSelectedModel(model);
+          }
+    };
     return (
         <div id="facetPanel" className="box">          
                 <div className="facetbox">
@@ -76,6 +86,26 @@ export default function Facets(props) {
                 <FacetList component="nav" className="listitem" >
                     {facets}
                 </FacetList>
+                <form>
+                    {props.matchedModels && props.matchedModels.map((model, index) => (
+                        <div key={index}>
+                        <input
+                            type="radio"
+                            id={`model${index}`}
+                            name="model"
+                            value={model}
+                            checked={selectedModel === model}
+                            onClick={(event) => handleModelChange(event, model)}
+                            className="listitem"
+                        />
+                        <label htmlFor={`model${index}`}>{model}</label>
+                        </div>
+                    ))}
+                    </form>
+
+                {/* <ModelList component="nav" className="listitem">
+                    {props.}
+                </ModelList> */}
             </div>
         </div>
     );

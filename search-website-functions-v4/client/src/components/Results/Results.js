@@ -13,7 +13,7 @@ function createUserSearchDescription(props, filterDesc) {
       return `<h3>No results found for your query.</h3><hr/>`;
     }
     else {
-      return `<h5>You searched for: <strong><u>${keywords.toLowerCase()}</u></strong></h5>`;
+      return `<h5>You searched for: <strong><u>${keywords.toLowerCase().trim().replaceAll("*", '')}</u></strong></h5>`;
    }
     
   }

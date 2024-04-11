@@ -36,6 +36,7 @@ export default function Search() {
   const [modelBrandName, setModelBrandName] = useState("");
   const [modelEquipmentType, setModelEquipmentType] = useState("");
   const resultsPerPage = top;
+  const [matchedModels, setMatchedModels] = useState(undefined);
   const initialRef = useRef(true);
   useEffect(() => {
     if (initialRef.current && (top===topParam || skip===skipParam || q===qParam || filters===undefined)) {
@@ -57,7 +58,7 @@ export default function Search() {
         skip: skip,
         filters: filters,
       };
-      axios.post('https://instaagentsearch-mwvqt7kpva-uc.a.run.app/search', body)
+      axios.post('http://0.0.0.0:8000/search', body)
           .then(response => {
             setResults(response.data.results);
             setFacets(response.data.facets);
@@ -73,6 +74,9 @@ export default function Search() {
             setModelBrandName(response.data.modelBrandName);
             setModelEquipmentType(response.data.modelEquipmentType);
             setIsLoading(false);
+            if (response.data.matched_models && response.data.matched_models.length > 1) {
+              setMatchedModels(response.data.matched_models);
+            }
           })
           .catch(error => {
             console.error(error);
@@ -137,7 +141,7 @@ export default function Search() {
     <main className="main main--search container-fluid">
       <div className="row">
         <div className="col-md-3"> 
-          <Facets facets={facets} filters={filters} preSelectedFilters={preSelectedFilters} setFilters={setFilters}></Facets>
+          <Facets facets={facets} filters={filters} preSelectedFilters={preSelectedFilters} setFilters={setFilters} matchedModels={matchedModels}></Facets>
         </div>
         {body}
       </div>

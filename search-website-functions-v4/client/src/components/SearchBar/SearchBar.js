@@ -46,12 +46,10 @@ export default function SearchBar(props) {
         setError(null);
         const debounceTimeout = setTimeout(() => {
           setIsLoading(true);
-          if (searchTerm && !searchTerm.match(/how to replace.*element.*/) && !searchTerm.match(/how to test.*element.*/)) {
-            // setIsLoading(true);
+          if (searchTerm) {
             setError(null);
     
             const source = axios.CancelToken.source();
-    
             axios.get(`https://instaagentsearch-mwvqt7kpva-uc.a.run.app/fetch_all?searchTerm=${encodeURIComponent(searchTerm)}`, {
                 cancelToken: source.token,
               })
@@ -103,7 +101,9 @@ export default function SearchBar(props) {
         setPartSuggestions([]);
         setManufacturers([]);
         setRecommendations([]);
-        props.onSearchHandler(searchTerm);
+        let query = (searchTerm.length >= 3 && searchTerm.length <6) ? searchTerm.replaceAll("*", "").trim() + "*": searchTerm.replaceAll("*", "").trim();
+        console.log(query);
+        props.onSearchHandler(query);
         setSearchTerm("");
     };
     
@@ -117,7 +117,7 @@ export default function SearchBar(props) {
               value={searchTerm}
               onChange={handleSearchChange}
               onFocus={() => setIsDropdownVisible(true)}
-              style={{ padding: '20px', paddingRight: '10px' }}
+              style={{ padding: '10px', paddingRight: '10px' }}
             />
             {searchTerm && (
               <div
@@ -153,6 +153,10 @@ export default function SearchBar(props) {
                         <li
                           key={index}
                           onClick={() => {
+                            setModelSuggestions([]);
+                            setPartSuggestions([]);
+                            setManufacturers([]);
+                            setRecommendations([]);
                             props.onSearchHandler(suggestion);
                             setSearchTerm("");
                           }}
@@ -178,6 +182,10 @@ export default function SearchBar(props) {
                         <li
                           key={index}
                           onClick={() => {
+                            setModelSuggestions([]);
+                            setPartSuggestions([]);
+                            setManufacturers([]);
+                            setRecommendations([]);
                             props.onSearchHandler(suggestion);
                             setSearchTerm("");
                           }}
@@ -206,7 +214,10 @@ export default function SearchBar(props) {
                       <li
                         key={index}
                         onClick={() => {
-                          console.log("clickled on model")
+                          setModelSuggestions([]);
+                          setPartSuggestions([]);
+                          setManufacturers([]);
+                          setRecommendations([]);
                           props.onSearchHandler(manufacturerName);
                           setSearchTerm("");
                         }}
@@ -273,8 +284,12 @@ export default function SearchBar(props) {
                                 }}
                               >
                                 <a
-                                  className="partDesc"
+                                  // href={`/search?q=${encodeURIComponent(rec.partNum)}`}
                                   onClick={() => {
+                                    setModelSuggestions([]);
+                                    setPartSuggestions([]);
+                                    setManufacturers([]);
+                                    setRecommendations([]);
                                     props.onSearchHandler(rec.partNum);
                                     setSearchTerm("");
                                   
