@@ -9,6 +9,7 @@ import logo from '../../images/cognitive_search.jpg';
 
 export default function Home() {
   const navigate = useNavigate();
+  const BASE_URL = "https://instaagentsearch-mwvqt7kpva-uc.a.run.app";
   const navigateToSearchPage = (q) => {
     if (!q || q === '') {
       q = '*'
@@ -22,7 +23,7 @@ export default function Home() {
       <header className="App-header">
       <div className="search-bar-container">
           <div className="search-bar">
-            <SearchBar pageContext="home" onSearchHandler={navigateToSearchPage}/>
+            <SearchBar pageContext="home" onSearchHandler={navigateToSearchPage} BASE_URL={BASE_URL}/>
           </div>
         </div>
       </header>

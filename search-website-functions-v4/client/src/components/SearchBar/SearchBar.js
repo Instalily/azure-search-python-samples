@@ -50,7 +50,7 @@ export default function SearchBar(props) {
             setError(null);
     
             const source = axios.CancelToken.source();
-            axios.get(`https://instaagentsearch-mwvqt7kpva-uc.a.run.app/fetch_all?searchTerm=${encodeURIComponent(searchTerm)}`, {
+            axios.get(props.BASE_URL+`/fetch_all?searchTerm=${encodeURIComponent(searchTerm)}`, {
                 cancelToken: source.token,
               })
               .then(response => response.data)
