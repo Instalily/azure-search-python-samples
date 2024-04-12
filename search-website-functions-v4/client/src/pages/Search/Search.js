@@ -37,6 +37,8 @@ export default function Search() {
   const [modelEquipmentType, setModelEquipmentType] = useState("");
   const resultsPerPage = top;
   const [matchedModels, setMatchedModels] = useState(undefined);
+  const [modelTop, setModelTop] = useState(10);
+  const [endOfModelList, setEndOfModelList] = useState(false);
   const initialRef = useRef(true);
   useEffect(() => {
     if (initialRef.current && (top===topParam || skip===skipParam || q===qParam || filters===undefined)) {
@@ -57,11 +59,20 @@ export default function Search() {
         top: top,
         skip: skip,
         filters: filters,
+        model_top: modelTop
       };
       axios.post('http://0.0.0.0:8000/search', body)
           .then(response => {
             setResults(response.data.results);
-            setFacets(response.data.facets);
+            let allFacets = response.data.facets;
+            if (response.data.matched_models && response.data.matched_models.length > 1) {
+              allFacets["Model Number"] = [];
+              response.data.matched_models.map((model) => {
+                allFacets["Model Number"].push({"value": model})
+              });
+            }
+            console.log(allFacets);
+            setFacets(allFacets);
             setResultCount(response.data.count);
             if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
               setPreSelectedFilters(response.data.preselectedFilters);
@@ -74,9 +85,13 @@ export default function Search() {
             setModelBrandName(response.data.modelBrandName);
             setModelEquipmentType(response.data.modelEquipmentType);
             setIsLoading(false);
-            if (response.data.matched_models && response.data.matched_models.length > 1) {
-              setMatchedModels(response.data.matched_models);
-            }
+            // if (response.data.matched_models && response.data.matched_models.length > 1) {
+            //   let modelMatches = [];
+            //   response.data.matched_models.map((model) => {
+            //     modelMatches.push({"field": "Model Number", "value": model})
+            //   });
+            //   setMatchedModels(modelMatches);
+            // }
           })
           .catch(error => {
             console.error(error);
@@ -88,6 +103,27 @@ export default function Search() {
     }
   }, [keywords, top, skip, filters, currentPage]);
 
+  const seeMore = () => {
+    // props.setModelTop(props.modelTop + 10);
+    axios.get(`http://0.0.0.0:8000/fetch_more_models?partialModel=${keywords}&model_top=${modelTop+10}`)
+    .then(response => {
+        let allFacets = [];
+        console.log(allFacets)
+        if (response.data.matched_models && response.data.matched_models.length > 0) {
+          response.data.matched_models.map((model) => {
+            allFacets.push({"value": model});
+          })
+        }
+        if (response.data.end_of_list) {
+          setEndOfModelList(response.data.end_of_list);
+        }
+        setFacets({...facets, "Model Number": allFacets});
+        setModelTop(modelTop + 10);
+    }).catch(error => {
+        console.error(error);
+      });
+}
+
   useEffect(() => {
     if (preSelectedFilters && preSelectedFilters.length > 0) {
       setFilters(preSelectedFilters);
@@ -97,6 +133,7 @@ export default function Search() {
 
   useEffect(() => {
     setCurrentPage(1);
+    setEndOfModelList(false);
     setFilters([]);
     setKeywords(q);
     navigate('/search?q=' + q);
@@ -141,7 +178,16 @@ export default function Search() {
     <main className="main main--search container-fluid">
       <div className="row">
         <div className="col-md-3"> 
-          <Facets facets={facets} filters={filters} preSelectedFilters={preSelectedFilters} setFilters={setFilters} matchedModels={matchedModels} setQ={setQ}></Facets>
+          <Facets 
+          facets={facets} 
+          filters={filters} 
+          preSelectedFilters={preSelectedFilters} 
+          setFilters={setFilters} 
+          matchedModels={matchedModels} 
+          postSearchHandler={postSearchHandler}
+          endOfModelList={endOfModelList}
+          seeMore={seeMore}>
+          </Facets>
         </div>
         {body}
       </div>

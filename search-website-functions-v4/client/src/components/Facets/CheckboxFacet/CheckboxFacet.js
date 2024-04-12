@@ -1,35 +1,58 @@
 import React, {useState} from 'react';
-import { Collapse, Checkbox, List, ListItem, ListItemText } from '@mui/material';
+import { Collapse, Checkbox, List, ListItem, ListItemText, Radio } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import styled from 'styled-components';
 
 import './CheckboxFacet.css';
 
 export default function CheckboxFacet(props) {
-
     let [isExpanded, setIsExpanded] = useState(false);
+    let [selectedModel, setSelectedModel] = useState(null);
+
+    const handleModelChange = (event, model) => {
+        if (selectedModel === model) {
+            setSelectedModel(null);
+            event.target.checked = false;
+            props.showAllFilters();
+        } else {
+            setSelectedModel(model);
+            props.postSearchHandler(model);
+        }
+    };
 
     const checkboxes = props.values.map(facetValue => {
-
         let isSelected = props.selectedFacets.some(facet => facet.value === facetValue.value);
-        
+
         return (
-            <FacetValueListItem dense disableGutters id={facetValue.value}>
-                <Checkbox 
-                    edge="start" 
-                    disableRipple 
-                    checked={isSelected}
-                    onClick= {
-                        isSelected ? 
-                        () => props.removeFilter({field: props.name, value: facetValue.value}) :
-                        () => props.addFilter(props.name, facetValue.value)
-                    }
-                />
-                <ListItemText primary={facetValue.value + " (" + facetValue.count + ")"}/>
+            <FacetValueListItem dense disableGutters id={facetValue.value} key={facetValue.value}>
+                {props.name !== "Model Number" ? (
+                    <>
+                        <Checkbox
+                            edge="start"
+                            disableRipple
+                            checked={isSelected}
+                            onChange={() => {
+                                isSelected 
+                                    ? props.removeFilter({ field: props.name, value: facetValue.value })
+                                    : props.addFilter(props.name, facetValue.value);
+                            }}
+                        />
+                        <ListItemText primary={`${facetValue.value} (${facetValue.count})`}/>
+                    </>
+                ) : (
+                    <>
+                        <Radio
+                            edge="start"
+                            disableRipple
+                            checked={selectedModel === facetValue.value}
+                            onChange={(event) => handleModelChange(event, facetValue.value)}
+                        />
+                        <ListItemText primary={facetValue.value}/>
+                    </>
+                )}
             </FacetValueListItem>
         );
     });
-
 
     return (
         <div>
@@ -42,6 +65,7 @@ export default function CheckboxFacet(props) {
             <Collapse in={isExpanded} component="div">
                 <FacetValuesList>
                     {checkboxes}
+                    {props.name === "Model Number" && !props.endOfModelList && <div class="see-more" role="button" tabindex="0" onClick={props.seeMore}>See More...</div>}
                 </FacetValuesList>
             </Collapse>
         </div>
