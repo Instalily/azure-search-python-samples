@@ -122,10 +122,9 @@ export default function SearchBar(props) {
             {searchTerm && (
               <div
                 style={{
-                  position: 'absolute',
-                  top: '50%',
-                  right: '11%',
-                  transform: 'translateY(-50%)',
+                  position: 'relative',
+                  top: '30%',
+                  right: '5%',
                   cursor: 'pointer'
                 }}
                 onClick={() => handleSearchChange({ target: { value: '' } })}
@@ -144,7 +143,7 @@ export default function SearchBar(props) {
             partSuggestions.length > 0 ||
             manufacturers.length > 0 ||
             recommendations.length > 0) && (isDropdownVisible) && (
-            <div className="suggestions-dropdown">
+              <div className={`suggestions-dropdown ${props.pageContext === 'search' ? 'search-page' : ''}`}>
               {modelSuggestions.length > 0 && <div className="suggestions-column">
                 <h3>Matching Models</h3>
                 <ul>
