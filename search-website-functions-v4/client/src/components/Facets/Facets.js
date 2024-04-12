@@ -38,6 +38,7 @@ export default function Facets(props) {
                 mapFacetName={mapFacetName}
                 selectedFacets={props.filters && props.filters.filter( f => f.field === key)}
                 postSearchHandler={props.postSearchHandler}
+                endOfModelList={props.endOfModelList}
                 seeMore={props.seeMore}
               />;
           });
@@ -77,7 +78,6 @@ export default function Facets(props) {
                 </div>
                 <FacetList component="nav" className="listitem" >
                     {facets}
-                    {/* {props.facets["Model Number"] && "See More..."} */}
                 </FacetList>
             </div>
         </div>

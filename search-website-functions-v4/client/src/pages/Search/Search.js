@@ -38,6 +38,7 @@ export default function Search() {
   const resultsPerPage = top;
   const [matchedModels, setMatchedModels] = useState(undefined);
   const [modelTop, setModelTop] = useState(10);
+  const [endOfModelList, setEndOfModelList] = useState(false);
   const initialRef = useRef(true);
   useEffect(() => {
     if (initialRef.current && (top===topParam || skip===skipParam || q===qParam || filters===undefined)) {
@@ -113,8 +114,9 @@ export default function Search() {
             allFacets.push({"value": model});
           })
         }
-        console.log(facets)
-        console.log("New Facets: ", allFacets);
+        if (response.data.end_of_list) {
+          setEndOfModelList(response.data.end_of_list);
+        }
         setFacets({...facets, "Model Number": allFacets});
         setModelTop(modelTop + 10);
     }).catch(error => {
@@ -131,6 +133,7 @@ export default function Search() {
 
   useEffect(() => {
     setCurrentPage(1);
+    setEndOfModelList(false);
     setFilters([]);
     setKeywords(q);
     navigate('/search?q=' + q);
@@ -182,6 +185,7 @@ export default function Search() {
           setFilters={setFilters} 
           matchedModels={matchedModels} 
           postSearchHandler={postSearchHandler}
+          endOfModelList={endOfModelList}
           seeMore={seeMore}>
           </Facets>
         </div>

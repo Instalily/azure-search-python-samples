@@ -65,7 +65,7 @@ export default function CheckboxFacet(props) {
             <Collapse in={isExpanded} component="div">
                 <FacetValuesList>
                     {checkboxes}
-                    {props.name === "Model Number" && <div class="see-more" role="button" tabindex="0" onClick={props.seeMore}>See More...</div>}
+                    {props.name === "Model Number" && !props.endOfModelList && <div class="see-more" role="button" tabindex="0" onClick={props.seeMore}>See More...</div>}
                 </FacetValuesList>
             </Collapse>
         </div>
