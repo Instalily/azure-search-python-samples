@@ -58,7 +58,7 @@ export default function Search() {
         skip: skip,
         filters: filters,
       };
-      axios.post('https://instaagentsearch-mwvqt7kpva-uc.a.run.app/search', body)
+      axios.post('http://0.0.0.0:8000/search', body)
           .then(response => {
             setResults(response.data.results);
             setFacets(response.data.facets);
@@ -141,7 +141,7 @@ export default function Search() {
     <main className="main main--search container-fluid">
       <div className="row">
         <div className="col-md-3"> 
-          <Facets facets={facets} filters={filters} preSelectedFilters={preSelectedFilters} setFilters={setFilters} matchedModels={matchedModels}></Facets>
+          <Facets facets={facets} filters={filters} preSelectedFilters={preSelectedFilters} setFilters={setFilters} matchedModels={matchedModels} setQ={setQ}></Facets>
         </div>
         {body}
       </div>

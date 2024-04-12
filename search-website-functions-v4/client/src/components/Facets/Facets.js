@@ -68,6 +68,7 @@ export default function Facets(props) {
             event.target.checked = false;
           } else {
             setSelectedModel(model);
+            props.setQ(model);
           }
     };
     return (
