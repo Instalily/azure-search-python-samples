@@ -12,3 +12,21 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.see-more {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    cursor: pointer;
+    color: #0000EE;
+    text-decoration: underline;
+    padding: 10px 0;
+    background: none;
+    border: none;
+    font-size: 16px;
+}
+
+.see-more:hover{
+  color: #551A8B;
+  outline: none;
+}

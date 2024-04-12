@@ -5,8 +5,6 @@ import styled from 'styled-components';
 import "./Facets.css";
 
 export default function Facets(props) {
-    const [selectedModel, setSelectedModel] = useState(null);
-
     function mapFacetName(facetName) {
         const capitalizeFirstLetter = (string) =>
             string[0] ? `${string[0].toUpperCase()}${string.substring(1)}` : '';
@@ -39,6 +37,8 @@ export default function Facets(props) {
                 removeFilter={removeFilter}
                 mapFacetName={mapFacetName}
                 selectedFacets={props.filters && props.filters.filter( f => f.field === key)}
+                postSearchHandler={props.postSearchHandler}
+                seeMore={props.seeMore}
               />;
           });
     } catch (error) {
@@ -62,15 +62,6 @@ export default function Facets(props) {
         }
 
     }
-    const handleModelChange = (event, model) => {
-        if (selectedModel === model) {
-            setSelectedModel(null);
-            event.target.checked = false;
-          } else {
-            setSelectedModel(model);
-            props.setQ(model);
-          }
-    };
     return (
         <div id="facetPanel" className="box">          
                 <div className="facetbox">
@@ -86,27 +77,8 @@ export default function Facets(props) {
                 </div>
                 <FacetList component="nav" className="listitem" >
                     {facets}
+                    {/* {props.facets["Model Number"] && "See More..."} */}
                 </FacetList>
-                <form>
-                    {props.matchedModels && props.matchedModels.map((model, index) => (
-                        <div key={index}>
-                        <input
-                            type="radio"
-                            id={`model${index}`}
-                            name="model"
-                            value={model}
-                            checked={selectedModel === model}
-                            onClick={(event) => handleModelChange(event, model)}
-                            className="listitem"
-                        />
-                        <label htmlFor={`model${index}`}>{model}</label>
-                        </div>
-                    ))}
-                    </form>
-
-                {/* <ModelList component="nav" className="listitem">
-                    {props.}
-                </ModelList> */}
             </div>
         </div>
     );
