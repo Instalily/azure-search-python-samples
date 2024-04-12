@@ -111,27 +111,24 @@ export default function SearchBar(props) {
     return (
           <div ref={searchBarRef}>
           <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Search model or part number"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              onFocus={() => setIsDropdownVisible(true)}
-              style={{ padding: '10px', paddingRight: '10px' }}
-            />
-            {searchTerm && (
-              <div
-                style={{
-                  position: 'relative',
-                  top: '30%',
-                  right: '5%',
-                  cursor: 'pointer'
-                }}
-                onClick={() => handleSearchChange({ target: { value: '' } })}
-              >
-                &#x2715;
-              </div>
-            )}
+            <div className="input-wrapper">
+              <input
+                type="text"
+                placeholder="Search model or part number"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onFocus={() => setIsDropdownVisible(true)}
+                style={{ padding: '8px', paddingRight: '10px' }}
+              />
+              {searchTerm && (
+                <div
+                  className="clear-icon" 
+                  onClick={() => handleSearchChange({ target: { value: '' } })}
+                >
+                  &#x2715;
+                </div>
+              )}
+            </div>
           <div className={props.page==="searchpage"? "button-container-searchpage": "button-container"}>
             <button type="submit">
               {!isLoading ? "Search" : <div className="loader"></div>}

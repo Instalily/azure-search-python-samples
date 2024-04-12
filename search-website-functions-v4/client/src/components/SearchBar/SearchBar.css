@@ -29,9 +29,33 @@
   width: 100%;
   background-color: #337778;
   border-radius: 0px 16px 16px 16px;
+
 }
 
 /* SEARCH PAGE SEARCH BAR */
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+input {
+  flex-grow: 1;
+}
+
+.clear-icon {
+  position: absolute;
+  right: 20px; /* Adjust as necessary */
+  cursor: pointer;
+  color: #ccc;
+}
 
 .search-bar-container-searchpage {
   position: relative;
@@ -50,7 +74,7 @@
 
 .search-bar-container-searchpage form {
   display: flex;
-  height: 38px;
+  height: 44px;
 }
 
 .search-bar-container-searchpage input,
@@ -70,10 +94,11 @@
   color: white;
   font-size: 16px;
   font-weight: 500;
-  height: 44px;
-  margin-left: 14px;
+  height: 45px;
+  margin-left: 12px;
   padding-left: 20px;
   padding-right: 20px;
+  
 }
 
 .search-bar-container-searchpage input:focus {
