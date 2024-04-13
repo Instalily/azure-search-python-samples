@@ -34,7 +34,7 @@ export default function Login() {
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh', 
-      backgroundColor: '#f0f0f0' 
+      backgroundColor: '#ffffff' 
     },
     form: {
       display: 'flex',
