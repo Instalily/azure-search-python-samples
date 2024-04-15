@@ -16,7 +16,7 @@ export default function Search() {
   
   let location = useLocation();
   const navigate = useNavigate();
-  
+  const BASE_URL = "https://instaagentsearch-mwvqt7kpva-uc.a.run.app";
   const [results, setResults] = useState([]);
   const [resultCount, setResultCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,7 +61,7 @@ export default function Search() {
         filters: filters,
         model_top: modelTop
       };
-      axios.post('http://0.0.0.0:8000/search', body)
+      axios.post(BASE_URL+'/search', body)
           .then(response => {
             setResults(response.data.results);
             let allFacets = response.data.facets;
@@ -179,7 +179,7 @@ export default function Search() {
     </header>
     <div className="search-bar-container-searchpage">
       <div className="search-bar-searchpage">
-      <SearchBar pageContext="search" onSearchHandler={postSearchHandler} page="searchpage"></SearchBar>
+      <SearchBar pageContext="search" onSearchHandler={postSearchHandler} page="searchpage" BASE_URL={BASE_URL}></SearchBar>
       </div>
     </div>
     <main className="main main--search container-fluid">
