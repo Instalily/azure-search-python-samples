@@ -111,7 +111,7 @@ export default function Search() {
         model_top: modelTop + 10,
         filters: filters
       }
-      axios.post(BASE_URL+`fetch_more_models/`, body)
+      axios.post(BASE_URL+`/fetch_more_models`, body)
       .then(response => {
           let allFacets = [];
           console.log(allFacets)
