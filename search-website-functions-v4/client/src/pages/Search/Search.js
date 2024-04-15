@@ -105,23 +105,30 @@ export default function Search() {
 
   const seeMore = () => {
     // props.setModelTop(props.modelTop + 10);
-    axios.get(BASE_URL+`/fetch_more_models?partialModel=${keywords}&model_top=${modelTop+10}`)
-    .then(response => {
-        let allFacets = [];
-        console.log(allFacets)
-        if (response.data.matched_models && response.data.matched_models.length > 0) {
-          response.data.matched_models.map((model) => {
-            allFacets.push({"value": model});
-          })
-        }
-        if (response.data.end_of_list) {
-          setEndOfModelList(response.data.end_of_list);
-        }
-        setFacets({...facets, "Model Number": allFacets});
-        setModelTop(modelTop + 10);
-    }).catch(error => {
-        console.error(error);
-      });
+    if (!endOfModelList) {
+      const body = {
+        partialModel: keywords,
+        model_top: modelTop + 10,
+        filters: filters
+      }
+      axios.post(`http://0.0.0.0:8000/fetch_more_models/`, body)
+      .then(response => {
+          let allFacets = [];
+          console.log(allFacets)
+          if (response.data.matched_models && response.data.matched_models.length > 0) {
+            response.data.matched_models.map((model) => {
+              allFacets.push({"value": model});
+            })
+          }
+          if (response.data.end_of_list) {
+            setEndOfModelList(response.data.end_of_list);
+          }
+          setFacets({...facets, "Model Number": allFacets});
+          setModelTop(modelTop + 10);
+      }).catch(error => {
+          console.error(error);
+        });
+    }
 }
 
   useEffect(() => {
