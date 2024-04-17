@@ -1,15 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 
 import './Pager.css';
+import { AppContext } from '../../contexts/AppContext';
 
-export default function Pager(props) {
-
-    let [selectedPage, setSelectedPage] = useState(props.currentPage);
-    let totalPages = Math.ceil(props.resultCount / props.resultsPerPage);
+export default function Pager() {
+    const {currentPage,resultCount, resultsPerPage,setCurrentPage} = useContext(AppContext)
+    let [selectedPage, setSelectedPage] = useState(currentPage);
+    let totalPages = Math.ceil(resultCount / resultsPerPage);
 
     useEffect(_=>{
-        props.setCurrentPage(selectedPage);
-    }, [selectedPage, props]);
+        setCurrentPage(selectedPage);
+    }, [selectedPage, currentPage,resultCount, resultsPerPage,setCurrentPage]);
 
     function goToNextPage() {
         setSelectedPage(selectedPage + 1);

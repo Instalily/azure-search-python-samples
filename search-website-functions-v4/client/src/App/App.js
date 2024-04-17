@@ -13,7 +13,7 @@ import Home from '../pages/Home/Home';
 import Search from '../pages/Search/Search';
 import Login from '../pages/Login/Login';
 import Details from '../pages/Details/Details';
-
+import { AppProvider } from '../contexts/AppContext';
 // Bootstrap styles, optionally with jQuery and Popper
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -26,9 +26,9 @@ export default function App() {
       <div className="container-fluid app">
         <BrowserRouter>
           <Routes>
-            <Route path={`/`} element={<Login />} />
-            <Route path={`/search`} element={<Search />} />
-            <Route path={`/home`} element={<Home />} />
+            {/* <Route path={`/`} element={<Login />} /> */}
+            <Route path={`/search`} element={<AppProvider><><Search /></></AppProvider>} />
+            <Route path={`/`} element={<Home />} />
           </Routes>
         </BrowserRouter>
         {<AppFooter />}

@@ -1,22 +1,32 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import { Collapse, Checkbox, List, ListItem, ListItemText, Radio } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import styled from 'styled-components';
 
 import './CheckboxFacet.css';
+import { AppContext } from '../../../contexts/AppContext';
 
 export default function CheckboxFacet(props) {
+    const {postSearchHandler,endOfModelList,filters,setFilters,seeMore,setModelBrandName,setModelEquipmentType} = useContext(AppContext);
     let [isExpanded, setIsExpanded] = useState(false);
     let [selectedModel, setSelectedModel] = useState(null);
-
     const handleModelChange = (event, model) => {
         if (selectedModel === model) {
             setSelectedModel(null);
             event.target.checked = false;
-            props.showAllFilters();
         } else {
             setSelectedModel(model);
-            props.postSearchHandler(model);
+            console.log(model);
+            const [modelnum, brandname, eqtype] = model.split()
+            setModelBrandName(brandname);
+            setModelEquipmentType(eqtype);
+            postSearchHandler(model);
+            // let newFilters = props.filters;
+            // if (props.filters) {
+            //     newFilters = newFilters.concat({field: "Model Number", value: `${model}`});
+            //     console.log("new filters: ", newFilters);
+            // }
+            // props.setFilters(newFilters);
         }
     };
 
@@ -65,7 +75,7 @@ export default function CheckboxFacet(props) {
             <Collapse in={isExpanded} component="div">
                 <FacetValuesList>
                     {checkboxes}
-                    {props.name === "Model Number" && !props.endOfModelList && <div class="see-more" role="button" tabindex="0" onClick={props.seeMore}>See More...</div>}
+                    {props.name === "Model Number" && !endOfModelList && <div class="see-more" role="button" tabindex="0" onClick={seeMore}>See More...</div>}
                 </FacetValuesList>
             </Collapse>
         </div>

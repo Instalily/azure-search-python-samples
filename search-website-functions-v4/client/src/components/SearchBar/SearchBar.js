@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import axios from 'axios';
 import useOutsideClick from './useOutsideClick';
 import "./SearchBar.css";
+import { AppContext } from '../../contexts/AppContext';
 
 export default function SearchBar(props) {
-
     const [searchTerm, setSearchTerm] = useState("");
     const [modelSuggestions, setModelSuggestions] = useState([]);
     const [partSuggestions, setPartSuggestions] = useState([]);
@@ -140,7 +140,7 @@ export default function SearchBar(props) {
             partSuggestions.length > 0 ||
             manufacturers.length > 0 ||
             recommendations.length > 0) && (isDropdownVisible) && (
-              <div className={`suggestions-dropdown ${props.pageContext === 'search' ? 'search-page' : ''}`}>
+              <div className={`suggestions-dropdown ${props.page === 'search' ? 'search-page' : ''}`}>
               {modelSuggestions.length > 0 && <div className="suggestions-column">
                 <h3>Matching Models</h3>
                 <ul>

@@ -1,10 +1,9 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Result from './Result/Result';
-
+import { AppContext } from '../../contexts/AppContext';
 import "./Results.css";
 
-function createUserSearchDescription(props, filterDesc) {
-  const { keywords, resultFlag, modelBrandName, modelEquipmentType } = props;
+function createUserSearchDescription(keywords, resultFlag, modelBrandName, modelEquipmentType, filterDesc) {
     if (resultFlag === "exact_model") {
     return `<h2>${keywords.toUpperCase()} ${modelBrandName} ${modelEquipmentType} Parts</h2><hr/>`;
   }
@@ -29,9 +28,9 @@ function createUserSearchDescription(props, filterDesc) {
   return `<h3>No results found for your query.</h3><hr/>`;
 }
 
-export default function Results(props) {
-
-  let results = props.documents.map((result, index) => {
+export default function Results() {
+  const { keywords, resultFlag, modelBrandName, modelEquipmentType, results, filters, skip, resultCount, top } = useContext(AppContext);
+  let res = results.map((result, index) => {
     return <Result 
         key={index} 
         document={result.document}
@@ -44,7 +43,7 @@ export default function Results(props) {
     'Part Type': 3
   };
 
-  const sortedFilters = props.filters && props.filters.sort((a, b) => {
+  const sortedFilters = filters && filters.sort((a, b) => {
     return (sortOrder[a.field] || 4) - (sortOrder[b.field] || 4);
   });
 
@@ -55,22 +54,20 @@ export default function Results(props) {
     return filter.value;
   }).join(' ');
 
-  const userSearchDesc = createUserSearchDescription(props, filterDesc);
+  const userSearchDesc = createUserSearchDescription(keywords, resultFlag, modelBrandName, modelEquipmentType, filterDesc);
 
-  let beginDocNumber = Math.min(props.skip + 1, props.count);
-  let endDocNumber = Math.min(props.skip + props.top, props.count);
+  let beginDocNumber = Math.min(skip + 1, resultCount);
+  let endDocNumber = Math.min(skip + top, resultCount);
 
   return (
     <div>
-      {/* <div><</div> */}
       <div>
       <div>
         <p className="results-info" dangerouslySetInnerHTML={{__html: userSearchDesc}}></p>
-        {/* {props.keywords.length > 0 && props.keywords !== "*" && <span className="centered-symbol" id="clickableSymbol" onClick={() => { props.setQ("*"); }}>&#x2715;</span>} */}
       </div> 
-        <p className="results-info">Showing {beginDocNumber}-{endDocNumber} of {props.count.toLocaleString()} results</p>
+        <p className="results-info">Showing {beginDocNumber}-{endDocNumber} of {resultCount.toLocaleString()} results</p>
         <div className="row row-cols-md-4 results">
-          {results}
+          {res}
         </div>
       </div>
     </div>

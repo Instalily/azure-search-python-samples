@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import { List, Chip } from '@mui/material';
 import CheckboxFacet from './CheckboxFacet/CheckboxFacet';
 import styled from 'styled-components';
 import "./Facets.css";
+import { AppContext } from '../../contexts/AppContext';
 
 export default function Facets(props) {
+    const {facets,filters,preSelectedFilters,setFilters,matchedModels,postSearchHandler,endOfModelList,resultFlag,seeMore} = useContext(AppContext);
     function mapFacetName(facetName) {
         const capitalizeFirstLetter = (string) =>
             string[0] ? `${string[0].toUpperCase()}${string.substring(1)}` : '';
@@ -16,37 +18,36 @@ export default function Facets(props) {
     }
 
     function addFilter(name, value) {
-        const newFilters = props.filters && props.filters.concat({ field: name, value: value });
-        props.setFilters(newFilters);
+        const newFilters = filters && filters.concat({ field: name, value: value });
+        setFilters(newFilters);
     }
 
     function removeFilter(filter) {      
-        const newFilters = props.filters && props.filters.filter((item) => item.value !== filter.value);
-        props.setFilters(newFilters);
+        const newFilters = filters && filters.filter((item) => item.value !== filter.value);
+        setFilters(newFilters);
     }
 
-    var facets;
+    var Facets;
 
     try{
-        facets = Object.keys(props.facets).map(key => {
+        Facets = Object.keys(facets)
+        .filter(key => !(resultFlag === "exact_model" && (key === "Equipment Type" || key === "Brand Name")))
+        .map(key => {
             return <CheckboxFacet 
                 key={key}
                 name={key} 
-                values={props.facets[key]}
+                values={facets[key]}
                 addFilter={addFilter}
                 removeFilter={removeFilter}
                 mapFacetName={mapFacetName}
-                selectedFacets={props.filters && props.filters.filter( f => f.field === key)}
-                postSearchHandler={props.postSearchHandler}
-                endOfModelList={props.endOfModelList}
-                seeMore={props.seeMore}
+                selectedFacets={filters && filters.filter( f => f.field === key)}
               />;
           });
     } catch (error) {
         console.log(error);
     }
 
-    const filters = props.filters && props.filters.map((filter, index) => {
+    const Filters = filters && filters.map((filter, index) => {
             return (
             <li key={index}>
                 <Chip 
@@ -58,8 +59,8 @@ export default function Facets(props) {
             );
           });
     const clearFilters = () =>{
-        if(filters && filters.length > 0) {
-            props.setFilters([])
+        if(Filters && Filters.length > 0) {
+            setFilters([])
         }
 
     }
@@ -73,11 +74,11 @@ export default function Facets(props) {
                 </div>  
                 <div id="clearFilters">
                 <ul className="filterlist">
-                    {filters}
+                    {Filters}
                 </ul>
                 </div>
                 <FacetList component="nav" className="listitem" >
-                    {facets}
+                    {Facets}
                 </FacetList>
             </div>
         </div>
