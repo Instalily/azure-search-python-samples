@@ -28,6 +28,23 @@ export const AppProvider = ({ children }) => {
     const [matchedModels, setMatchedModels] = useState(undefined);
     const [modelTop, setModelTop] = useState(10);
     const [endOfModelList, setEndOfModelList] = useState(false);
+    const [userSearchDesc, setUserSearchDesc] = useState("");
+    const sortOrder = {
+        'Brand Name': 1,
+        'Equipment Name': 2,
+        'Part Type': 3
+      };
+    
+    const sortedFilters = filters && filters.sort((a, b) => {
+        return (sortOrder[a.field] || 4) - (sortOrder[b.field] || 4);
+    });
+
+    let filterDesc = sortedFilters && sortedFilters.map(filter => {
+        if (filter.value === 'Others') {
+         return 'Uncategorized';
+        }
+        return filter.value;
+    }).join(' ');
     let exactModelMatch = false;
     const initialRef = useRef(true);
     const navigate = useNavigate();
@@ -121,12 +138,41 @@ export const AppProvider = ({ children }) => {
         navigate('/search?q=' + q);
     }, [q]);
 
+    useEffect(() => {
+        setUserSearchDesc(createUserSearchDescription());
+    }, [keywords, resultFlag, modelBrandName, modelEquipmentType]);
+
     let postSearchHandler = (searchTerm) => {
         if (!searchTerm || searchTerm === '') {
           searchTerm = '*'
         }
         setQ(searchTerm);
       }
+
+    function createUserSearchDescription() {
+        if (resultFlag === "exact_model") {
+        return `<h2>${keywords.toUpperCase()} ${modelBrandName} ${modelEquipmentType} Parts</h2><hr/>`;
+      }
+      if (keywords.length > 0 && keywords !== "*") {
+        if (resultFlag && resultFlag==="no result") {
+          return `<h3>No results found for your query.</h3><hr/>`;
+        }
+        else {
+          return `<h5>You searched for: <strong><u>${keywords.toLowerCase().trim().replaceAll("*", '')}</u></strong></h5>`;
+       }
+        
+      }
+      if (keywords === "*") {
+        return (!filterDesc || filterDesc.length === 0) ? 
+          "<h2>Showing All Results</h2><hr/>" : 
+          `<h2>All ${filterDesc} Parts</h2><hr/>`;
+      }
+      if (filterDesc.length > 0) {
+        return `<h2>${filterDesc} Parts</h2><hr/>`;
+      }
+    
+      return `<h3>No results found for your query.</h3><hr/>`;
+    }
 
       const seeMore = () => {
         if (!endOfModelList) {
@@ -160,7 +206,7 @@ export const AppProvider = ({ children }) => {
             q,setQ,skip,setSkip,top,filters,setFilters,facets,setFacets,isLoading,setIsLoading,preSelectedFilters,setPreSelectedFilters,
             preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultFlag,setResultFlag,modelBrandName,setModelBrandName,
             modelEquipmentType,setModelEquipmentType,resultsPerPage,matchedModels,setMatchedModels,modelTop,setModelTop,
-            endOfModelList,setEndOfModelList,exactModelMatch,initialRef,postSearchHandler,seeMore}}>
+            endOfModelList,setEndOfModelList,userSearchDesc, setUserSearchDesc,exactModelMatch,initialRef,postSearchHandler,seeMore}}>
             {children}
         </AppContext.Provider>
     );

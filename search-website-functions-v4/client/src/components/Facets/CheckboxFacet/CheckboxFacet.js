@@ -17,7 +17,8 @@ export default function CheckboxFacet(props) {
         } else {
             setSelectedModel(model);
             console.log(model);
-            const [modelnum, brandname, eqtype] = model.split()
+            const [modelnum, brandname, eqtype] = model.split(" ")
+            console.log(brandname, eqtype)
             setModelBrandName(brandname);
             setModelEquipmentType(eqtype);
             postSearchHandler(model);
