@@ -1,0 +1,17 @@
+.header {
+    background-color: #ffffff;
+    color: #eee;
+}
+
+.navbar-logo {
+    width: 80%;
+    height: auto;
+    margin-left: 10px;
+    margin-top: 4px;
+}
+
+.nav-link { color: #fff; }
+.nav-link:hover { color: #eee; }
+
+.auth-link { color: #fff; }
+.auth-link:hover { color: #eee; }

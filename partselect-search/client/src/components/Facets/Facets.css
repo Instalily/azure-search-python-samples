@@ -1,0 +1,33 @@
+.facetbox {
+    border-right: 1px solid #f0f0f0;
+}
+
+.clear-filters {
+    width: 100%;
+    margin-left: 14px; 
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.box {
+    height: 100%;
+}
+
+.listitem {
+    padding-left: 0px !important;
+}
+
+.filterlist {
+    list-style: none;
+}
+
+.chip {
+    margin: 0.25em;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+    .clear-filters {
+        margin-top: 20px;
+    }
+}
