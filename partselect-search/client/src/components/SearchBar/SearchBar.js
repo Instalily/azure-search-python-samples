@@ -14,7 +14,7 @@ export default function SearchBar(props) {
     const [recommendations, setRecommendations] = useState([]);
     const [error, setError] = useState(null);
     const [isDropdownVisible, setIsDropdownVisible] = useState(true);
-    const maxQueryLen = 20;
+    const maxQueryLen = 100;
     const searchBarRef = useRef(null);
 
     const handleSearchChange = (event) => {

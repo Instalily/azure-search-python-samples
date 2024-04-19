@@ -31,7 +31,7 @@ export default function Facets(props) {
 
     try{
         Facets = Object.keys(facets)
-        .filter(key => !(modelNumSearch && (key === "Equipment Type" || key === "Brand Name")))
+        .filter(key => (modelNumSearch && !(key === "Equipment Type" || key === "Brand Name")))
         .map(key => {
             return <CheckboxFacet 
                 key={key}
