@@ -9,7 +9,7 @@ export const AppProvider = ({ children }) => {
     const [results, setResults] = useState([]);
     const [resultCount, setResultCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const qParam = new URLSearchParams(location.search).get('q') ?? "*";
+    const qParam = new URLSearchParams(location.search).get('q');
     const topParam = parseInt(new URLSearchParams(location.search).get('top') ?? 8, 10);
     const skipParam = parseInt(new URLSearchParams(location.search).get('skip') ?? 0, 10);
     const [q, setQ] = useState(qParam);
@@ -82,38 +82,45 @@ export const AppProvider = ({ children }) => {
             };
             axios.post(BASE_URL+'/search', body)
                 .then(response => {
-                setResults(response.data.results);
-                let allFacets = response.data.facets;
-                if (response.data.matched_models && response.data.matched_models.length > 0) {
-                    setMatchedModels(response.data.matched_models);
-                    setSelectModelNum(true);
-                    if (response.data.matched_models.length === 1 && response.data.matched_models[0]["ModelNum"].toLowerCase() === keywords.toLowerCase()) {
-                        exactModelMatch = true;
-                    }
-                    if (!exactModelMatch) {
-                    allFacets["Model Number"] = [];
-                    response.data.matched_models.map((model) => {
-                        allFacets["Model Number"].push(
-                            {
-                                "id": model["kModelMasterId"], 
-                                "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"]})`}` 
-                            })
-                    });
-                    }
+                console.log(response);
+                if (JSON.stringify(response.data) === '{}') {
+                  console.log("No data returned");
+                  setQ("*");
                 }
-                if (response.data.endofModelList) {
-                    setEndOfModelList(true);
+                else {
+                  setResults(response.data.results);
+                  let allFacets = response.data.facets;
+                  if (response.data.matched_models && response.data.matched_models.length > 0) {
+                      setMatchedModels(response.data.matched_models);
+                      setSelectModelNum(true);
+                      if (response.data.matched_models.length === 1 && response.data.matched_models[0]["ModelNum"].toLowerCase() === keywords.toLowerCase()) {
+                          exactModelMatch = true;
+                      }
+                      if (!exactModelMatch) {
+                      allFacets["Model Number"] = [];
+                      response.data.matched_models.map((model) => {
+                          allFacets["Model Number"].push(
+                              {
+                                  "id": model["kModelMasterId"], 
+                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"]})`}` 
+                              })
+                      });
+                      }
+                  }
+                  if (response.data.endofModelList) {
+                      setEndOfModelList(true);
+                  }
+                  setFacets(allFacets);
+                  setResultCount(response.data.count);
+                  if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
+                      setPreSelectedFilters(response.data.preselectedFilters);
+                      setPreSelectedFlag(true);
+                  }
+                  if (response.data.keywords.toLowerCase() !== q.toLowerCase()) {
+                      setKeywords(response.data.keywords);
+                  }
+                  setIsLoading(false);
                 }
-                setFacets(allFacets);
-                setResultCount(response.data.count);
-                if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
-                    setPreSelectedFilters(response.data.preselectedFilters);
-                    setPreSelectedFlag(true);
-                }
-                if (response.data.keywords.toLowerCase() !== q.toLowerCase()) {
-                    setKeywords(response.data.keywords);
-                }
-                setIsLoading(false);
                 })
                 .catch(error => {
                 console.error(error);
@@ -133,6 +140,7 @@ export const AppProvider = ({ children }) => {
     }, [preSelectedFilters]);
 
     useEffect(() => {
+      if (q && !q=="") {
         setCurrentPage(1);
         setFilters([]);
         setKeywords(q);
@@ -141,11 +149,20 @@ export const AppProvider = ({ children }) => {
         setFacets([]);
         setSelectModelNum(false);
         navigate('/search?q=' + q);
+      }
     }, [q]);
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
     }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc]);
+
+    const navigateToSearchPage = (searchTerm, modelnum_search=false) => {
+      setModelNumSearch(modelnum_search);
+      if (!searchTerm || searchTerm === '') {
+        searchTerm = '*'
+      }
+      setQ(searchTerm);
+    }
 
     let postSearchHandler = (searchTerm, modelnum_search=false) => {
       setModelNumSearch(modelnum_search);
@@ -157,12 +174,15 @@ export const AppProvider = ({ children }) => {
 
     function createUserSearchDescription() {
       let searchDesc = '';
-      if (keywords.length > 0 && keywords !== "*") {
+      if (keywords && keywords.length > 0 && keywords !== "*") {
         if (resultCount === 0) {
           searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.toLowerCase().trim().replaceAll("*", '')}</u></h4><hr/>`;
         }
         else if (resultCount === TOTAL_RES_COUNT) {
           searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.toLowerCase().trim().replaceAll("*", '')}</u></h4><hr/>`;
+          if (selectModelNum) {
+            searchDesc = searchDesc + "<h6>Please select a model number from the panel on the left for the best results.</h6>"
+          }
         }
         else {
           if (modelNumSearch && modelNameDesc!=="") {
@@ -224,7 +244,7 @@ export const AppProvider = ({ children }) => {
             q,setQ,skip,setSkip,top,filters,setFilters,facets,setFacets,isLoading,setIsLoading,preSelectedFilters,setPreSelectedFilters,
             preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,modelTop,setModelTop,
             endOfModelList,setEndOfModelList,userSearchDesc,setUserSearchDesc,exactModelMatch,initialRef,postSearchHandler,modelNameDesc,
-            setModelNameDesc,seeMore}}>
+            setModelNameDesc,seeMore,navigateToSearchPage,selectModelNum,setSelectModelNum}}>
             {children}
         </AppContext.Provider>
     );

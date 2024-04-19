@@ -13,7 +13,6 @@ import axios from 'axios';
 import './App.css';
 
 export default function App() {
-  let BASE_URL = "https://instaagentsearch-mwvqt7kpva-uc.a.run.app";
   /*
   const [warmedSearch, setWarmedSearch] = useState(false);
   const [warmedFetchAll, setwarmedFetchAll] = useState(false);
@@ -71,7 +70,7 @@ export default function App() {
           <Routes>
             {/* <Route path={`/`} element={<Login />} /> */}
             <Route path={`/search`} element={<AppProvider><><Search /></></AppProvider>} />
-            <Route path={`/`} element={<Home />} />
+            <Route path={`/`} element={<AppProvider><><Home /></></AppProvider>} />
           </Routes>
         </BrowserRouter>
         {<AppFooter />}
