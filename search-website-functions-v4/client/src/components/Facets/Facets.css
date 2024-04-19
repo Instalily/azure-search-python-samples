@@ -15,10 +15,15 @@
 
 .listitem {
     padding-left: 0px !important;
+    
 }
 
 .filterlist {
     list-style: none;
+}
+
+.filterlist li + li {
+    margin-top: 10px !important;
 }
 
 .chip {
