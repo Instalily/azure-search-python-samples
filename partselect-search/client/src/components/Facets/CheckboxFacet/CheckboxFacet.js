@@ -7,27 +7,18 @@ import './CheckboxFacet.css';
 import { AppContext } from '../../../contexts/AppContext';
 
 export default function CheckboxFacet(props) {
-    const {postSearchHandler,endOfModelList,filters,setFilters,seeMore,setModelBrandName,setModelEquipmentType} = useContext(AppContext);
+    const {postSearchHandler,endOfModelList,seeMore,setModelNameDesc} = useContext(AppContext);
     let [isExpanded, setIsExpanded] = useState(false);
     let [selectedModel, setSelectedModel] = useState(null);
-    const handleModelChange = (event, model) => {
+    const handleModelChange = (event, id, model) => {
         if (selectedModel === model) {
             setSelectedModel(null);
             event.target.checked = false;
         } else {
             setSelectedModel(model);
             console.log(model);
-            const [modelnum, brandname, eqtype] = model.split(" ")
-            console.log(brandname, eqtype)
-            setModelBrandName(brandname);
-            setModelEquipmentType(eqtype);
-            postSearchHandler(model);
-            // let newFilters = props.filters;
-            // if (props.filters) {
-            //     newFilters = newFilters.concat({field: "Model Number", value: `${model}`});
-            //     console.log("new filters: ", newFilters);
-            // }
-            // props.setFilters(newFilters);
+            setModelNameDesc(model);
+            postSearchHandler(id, true);
         }
     };
 
@@ -56,7 +47,7 @@ export default function CheckboxFacet(props) {
                             edge="start"
                             disableRipple
                             checked={selectedModel === facetValue.value}
-                            onChange={(event) => handleModelChange(event, facetValue.value)}
+                            onChange={(event) => handleModelChange(event, facetValue.id, facetValue.value)}
                         />
                         <ListItemText primary={facetValue.value}/>
                     </>
@@ -84,13 +75,11 @@ export default function CheckboxFacet(props) {
 }
 
 const FacetListItem = styled(ListItem)({
-    paddingLeft: '20px !important',
+    paddingLeft: '36px !important',
 })
 
 const FacetValueListItem= styled(ListItem)({
-    paddingLeft: '40px !important',
-    paddingTop: '0px !important', // Reduce padding-top
-    paddingBottom: '0px !important', // Reduce padding-bottom
+    paddingLeft: '46px !important',
 });
 
 const FacetValuesList= styled(List)({

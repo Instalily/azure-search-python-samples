@@ -5,6 +5,7 @@ import "./SearchBar.css";
 import { AppContext } from '../../contexts/AppContext';
 
 export default function SearchBar(props) {
+  const {BASE_URL,setSelectModelNum,setModelNameDesc} = useContext(AppContext);
     const [searchTerm, setSearchTerm] = useState("");
     const [modelSuggestions, setModelSuggestions] = useState([]);
     const [partSuggestions, setPartSuggestions] = useState([]);
@@ -13,7 +14,7 @@ export default function SearchBar(props) {
     const [recommendations, setRecommendations] = useState([]);
     const [error, setError] = useState(null);
     const [isDropdownVisible, setIsDropdownVisible] = useState(true);
-    const maxQueryLen = 20;
+    const maxQueryLen = 100;
     const searchBarRef = useRef(null);
 
     const handleSearchChange = (event) => {
@@ -50,7 +51,7 @@ export default function SearchBar(props) {
             setError(null);
     
             const source = axios.CancelToken.source();
-            axios.get(props.BASE_URL+`/fetch_all?searchTerm=${encodeURIComponent(searchTerm)}`, {
+            axios.get(BASE_URL+`/fetch_all?searchTerm=${encodeURIComponent(searchTerm)}`, {
                 cancelToken: source.token,
               })
               .then(response => response.data)
@@ -63,9 +64,7 @@ export default function SearchBar(props) {
                 }
           
                   if(response.models && response.models.length !== 0){
-                    setModelSuggestions(response.models.map((mn) => 
-                      mn ? mn.toUpperCase() : ""
-                  ))
+                    setModelSuggestions(response.models)
                 }
           
                 if(response.manufacturers && response.manufacturers.length!==0) {
@@ -153,13 +152,15 @@ export default function SearchBar(props) {
                             setPartSuggestions([]);
                             setManufacturers([]);
                             setRecommendations([]);
-                            props.onSearchHandler(suggestion);
+                            setSelectModelNum(`${suggestion["ModelNum"]} ${suggestion["BrandName"]} ${suggestion["EquipmentType"]} ${suggestion["MfgModelNum"] === "nan" ? "" : `(${suggestion["MfgModelNum"]})`}`);
+                            setModelNameDesc(`${suggestion["ModelNum"]} ${suggestion["BrandName"]} ${suggestion["EquipmentType"]} ${suggestion["MfgModelNum"] === "nan" ? "" : `(${suggestion["MfgModelNum"]})`}`);
+                            props.onSearchHandler(suggestion["kModelMasterId"],true);
                             setSearchTerm("");
                           }}
                         >
                           <span
                                     dangerouslySetInnerHTML={{
-                                      __html: suggestion.replace(
+                                      __html: suggestion["ModelNum"].replace(
                                         new RegExp(`(${searchTerm})`, "gi"),
                                         "<strong>$1</strong>"
                                       ),

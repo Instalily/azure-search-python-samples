@@ -5,7 +5,7 @@ import "./Results.css";
 
 export default function Results() {
   const { results, skip, resultCount, top, userSearchDesc } = useContext(AppContext);
-  let res = results.map((result, index) => {
+  let res = results && results.map((result, index) => {
     return <Result 
         key={index} 
         document={result.document}

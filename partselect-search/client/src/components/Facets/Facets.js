@@ -6,7 +6,7 @@ import "./Facets.css";
 import { AppContext } from '../../contexts/AppContext';
 
 export default function Facets(props) {
-    const {facets,filters,preSelectedFilters,setFilters,matchedModels,postSearchHandler,endOfModelList,resultFlag,seeMore} = useContext(AppContext);
+    const {facets,filters,setFilters,modelNumSearch} = useContext(AppContext);
     function mapFacetName(facetName) {
         const capitalizeFirstLetter = (string) =>
             string[0] ? `${string[0].toUpperCase()}${string.substring(1)}` : '';
@@ -31,7 +31,7 @@ export default function Facets(props) {
 
     try{
         Facets = Object.keys(facets)
-        .filter(key => !(resultFlag === "exact_model" && (key === "Equipment Type" || key === "Brand Name")))
+        .filter(key => (modelNumSearch && !(key === "Equipment Type" || key === "Brand Name")))
         .map(key => {
             return <CheckboxFacet 
                 key={key}
