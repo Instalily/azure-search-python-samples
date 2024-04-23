@@ -100,6 +100,7 @@ export default function SearchBar(props) {
         setPartSuggestions([]);
         setManufacturers([]);
         setRecommendations([]);
+        setIsDropdownVisible(false);
         let query = (searchTerm.length >= 3 && searchTerm.length <6) ? searchTerm.replaceAll("*", "").trim() + "*": searchTerm.replaceAll("*", "").trim();
         console.log(query);
         props.onSearchHandler(query);
