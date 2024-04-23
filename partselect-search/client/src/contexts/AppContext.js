@@ -46,7 +46,7 @@ export const AppProvider = ({ children }) => {
         }
         return filter.value;
     }).join(' ');
-    let exactModelMatch = false;
+    const [exactModelMatch, setExactModelMatch] = useState(false);
     const initialRef = useRef(true);
     const navigate = useNavigate();
     let BASE_URL;
@@ -94,7 +94,10 @@ export const AppProvider = ({ children }) => {
                       setMatchedModels(response.data.matched_models);
                       setSelectModelNum(true);
                       if (response.data.matched_models.length === 1 && response.data.matched_models[0]["ModelNum"].toLowerCase() === keywords.toLowerCase()) {
-                          exactModelMatch = true;
+                          setExactModelMatch(true);
+                      }
+                      else {
+                        setExactModelMatch(false);
                       }
                       if (!exactModelMatch) {
                       allFacets["Model Number"] = [];
