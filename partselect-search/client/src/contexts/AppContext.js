@@ -15,6 +15,7 @@ export const AppProvider = ({ children }) => {
     const [q, setQ] = useState(qParam);
     const [skip, setSkip] = useState(skipParam);
     const [top] = useState(topParam);
+    const modelsearchParam = new URLSearchParams(location.search).get('modelsearch') ?? "false";
     const [filters, setFilters] = useState(undefined);
     const [facets, setFacets] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -26,8 +27,9 @@ export const AppProvider = ({ children }) => {
     const [modelTop, setModelTop] = useState(10);
     const [endOfModelList, setEndOfModelList] = useState(false);
     const [userSearchDesc, setUserSearchDesc] = useState("");
-    const [modelNumSearch, setModelNumSearch] = useState(false);
-    const [modelNameDesc, setModelNameDesc] = useState("");
+    const [modelNumSearch, setModelNumSearch] = useState(modelsearchParam === "true")
+    const modelnameParam =  new URLSearchParams(location.search).get('modelname') ?? "";
+    const [modelNameDesc, setModelNameDesc] = useState(modelnameParam);
     const [selectModelNum, setSelectModelNum] = useState(undefined);
     const TOTAL_RES_COUNT = 4412838;
     const sortOrder = {
@@ -143,7 +145,7 @@ export const AppProvider = ({ children }) => {
     }, [preSelectedFilters]);
 
     useEffect(() => {
-      if (q && !q=="") {
+      if (q) {
         setCurrentPage(1);
         setFilters([]);
         setKeywords(q);
@@ -151,24 +153,29 @@ export const AppProvider = ({ children }) => {
         setEndOfModelList(false);
         setFacets([]);
         setSelectModelNum(false);
-        navigate('/search?q=' + q);
+        let endpoint = '/search?q=' + q + '&modelsearch=' + modelNumSearch;
+        if (modelNameDesc) {
+          endpoint = endpoint += "&modelname=" + modelNameDesc
+          if (!exactModelMatch) {
+            setExactModelMatch(true);
+          }
+        }
+        navigate(endpoint);
       }
-    }, [q]);
+    }, [q, modelNumSearch]);
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
     }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc]);
 
-    const navigateToSearchPage = (searchTerm, modelnum_search=false) => {
-      setModelNumSearch(modelnum_search);
+    const navigateToSearchPage = (searchTerm) => {
       if (!searchTerm || searchTerm === '') {
         searchTerm = '*'
       }
       setQ(searchTerm);
     }
 
-    let postSearchHandler = (searchTerm, modelnum_search=false) => {
-      setModelNumSearch(modelnum_search);
+    let postSearchHandler = (searchTerm) => {
         if (!searchTerm || searchTerm === '') {
           searchTerm = '*'
         }
@@ -179,13 +186,13 @@ export const AppProvider = ({ children }) => {
       let searchDesc = '';
       if (keywords && keywords.length > 0 && keywords !== "*") {
         if (resultCount === 0) {
-          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.toUpperCase().trim().replaceAll("*", '')}</u></h4><hr/>`;
+          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
           if (selectModelNum) {
             searchDesc = searchDesc + "<h6>Please select a model number from the panel on the left for the best results.</h6>"
           }
         }
         else if (resultCount === TOTAL_RES_COUNT) {
-          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.toUpperCase().trim().replaceAll("*", '')}</u></h4><hr/>`;
+          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
           if (selectModelNum) {
             searchDesc = searchDesc + "<h6>Please select a model number from the panel on the left for the best results.</h6>"
           }
@@ -195,7 +202,7 @@ export const AppProvider = ({ children }) => {
             searchDesc = searchDesc + `<h3>${modelNameDesc} Parts</h3><hr>`;
           }
           else {
-            searchDesc = searchDesc + `<h4>You searched for: <strong><u>${keywords.toUpperCase().trim().replaceAll("*", '')}</u></strong></h4>`;
+            searchDesc = searchDesc + `<h4>You searched for: <strong><u>${keywords.trim().replaceAll("*", '')}</u></strong></h4>`;
             if (selectModelNum) {
               searchDesc = searchDesc + "<hr><h6>Please select a model number from the panel on the left for the best results.</h6>"
             }
@@ -249,8 +256,8 @@ export const AppProvider = ({ children }) => {
             value={{navigate,BASE_URL,results,setResults,resultCount,setResultCount,currentPage,setCurrentPage,qParam,topParam,skipParam,
             q,setQ,skip,setSkip,top,filters,setFilters,facets,setFacets,isLoading,setIsLoading,preSelectedFilters,setPreSelectedFilters,
             preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,modelTop,setModelTop,
-            endOfModelList,setEndOfModelList,userSearchDesc,setUserSearchDesc,exactModelMatch,initialRef,postSearchHandler,modelNameDesc,
-            setModelNameDesc,seeMore,navigateToSearchPage,selectModelNum,setSelectModelNum}}>
+            endOfModelList,setEndOfModelList,userSearchDesc,setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,modelNameDesc,
+            setModelNameDesc,seeMore,navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch, setModelNumSearch}}>
             {children}
         </AppContext.Provider>
     );

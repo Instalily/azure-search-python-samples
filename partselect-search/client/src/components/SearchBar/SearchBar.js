@@ -155,7 +155,10 @@ export default function SearchBar(props) {
                             setRecommendations([]);
                             setSelectModelNum(`${suggestion["ModelNum"]} ${suggestion["BrandName"]} ${suggestion["EquipmentType"]} ${suggestion["MfgModelNum"] === "nan" ? "" : `(${suggestion["MfgModelNum"]})`}`);
                             setModelNameDesc(`${suggestion["ModelNum"]} ${suggestion["BrandName"]} ${suggestion["EquipmentType"]} ${suggestion["MfgModelNum"] === "nan" ? "" : `(${suggestion["MfgModelNum"]})`}`);
-                            props.onSearchHandler(suggestion["kModelMasterId"],true);
+                            if (props.setModelNumSearch) {
+                              props.setModelNumSearch(true);
+                            }
+                            props.onSearchHandler(suggestion["kModelMasterId"]);
                             setSearchTerm("");
                           }}
                         >

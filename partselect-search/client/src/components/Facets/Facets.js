@@ -30,8 +30,9 @@ export default function Facets(props) {
     var Facets;
 
     try{
+        console.log(exactModelMatch)
         Facets = Object.keys(facets)
-        .filter(key => !(exactModelMatch && (key === "Equipment Type" || key === "Brand Name")))
+        .filter(key => !((exactModelMatch && key === "Equipment Type") || (exactModelMatch && key === "Brand Name")))
         .map(key => {
             return <CheckboxFacet 
                 key={key}

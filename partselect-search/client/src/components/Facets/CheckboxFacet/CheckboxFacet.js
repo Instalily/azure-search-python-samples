@@ -7,7 +7,7 @@ import './CheckboxFacet.css';
 import { AppContext } from '../../../contexts/AppContext';
 
 export default function CheckboxFacet(props) {
-    const {postSearchHandler,endOfModelList,seeMore,setModelNameDesc} = useContext(AppContext);
+    const {postSearchHandler,endOfModelList,seeMore,setModelNameDesc,setExactModelMatch,setModelNumSearch} = useContext(AppContext);
     let [isExpanded, setIsExpanded] = useState(false);
     let [selectedModel, setSelectedModel] = useState(null);
     const handleModelChange = (event, id, model) => {
@@ -18,7 +18,9 @@ export default function CheckboxFacet(props) {
             setSelectedModel(model);
             console.log(model);
             setModelNameDesc(model);
-            postSearchHandler(id, true);
+            setExactModelMatch(true);
+            setModelNumSearch(true);
+            postSearchHandler(id);
         }
     };
 
