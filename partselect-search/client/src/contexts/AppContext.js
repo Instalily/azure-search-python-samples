@@ -179,10 +179,13 @@ export const AppProvider = ({ children }) => {
       let searchDesc = '';
       if (keywords && keywords.length > 0 && keywords !== "*") {
         if (resultCount === 0) {
-          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.toLowerCase().trim().replaceAll("*", '')}</u></h4><hr/>`;
+          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.toUpperCase().trim().replaceAll("*", '')}</u></h4><hr/>`;
+          if (selectModelNum) {
+            searchDesc = searchDesc + "<h6>Please select a model number from the panel on the left for the best results.</h6>"
+          }
         }
         else if (resultCount === TOTAL_RES_COUNT) {
-          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.toLowerCase().trim().replaceAll("*", '')}</u></h4><hr/>`;
+          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.toUpperCase().trim().replaceAll("*", '')}</u></h4><hr/>`;
           if (selectModelNum) {
             searchDesc = searchDesc + "<h6>Please select a model number from the panel on the left for the best results.</h6>"
           }
@@ -192,7 +195,7 @@ export const AppProvider = ({ children }) => {
             searchDesc = searchDesc + `<h3>${modelNameDesc} Parts</h3><hr>`;
           }
           else {
-            searchDesc = searchDesc + `<h4>You searched for: <strong><u>${keywords.toLowerCase().trim().replaceAll("*", '')}</u></strong></h4>`;
+            searchDesc = searchDesc + `<h4>You searched for: <strong><u>${keywords.toUpperCase().trim().replaceAll("*", '')}</u></strong></h4>`;
             if (selectModelNum) {
               searchDesc = searchDesc + "<hr><h6>Please select a model number from the panel on the left for the best results.</h6>"
             }
