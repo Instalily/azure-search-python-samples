@@ -40,7 +40,6 @@ export const AppProvider = ({ children }) => {
     const sortOrder = {
         'Brand Name': 1,
         'Equipment Type': 2,
-        'Part Type': 3
       };
     const [exactModelMatch, setExactModelMatch] = useState(false);
     const initialRef = useRef(true);
@@ -137,15 +136,18 @@ export const AppProvider = ({ children }) => {
     }, [preSelectedFilters]);
 
     useEffect(() => {
-      if (sortedFilters && sortedFilters.length > 0) {
-        setFilterDesc(sortedFilters && sortedFilters.map(filter => {
-          if (filter.value === 'Others') {
-           return 'Uncategorized';
-          }
-          return filter.value;
-      }).join(' '));
-      }
-    }, [sortedFilters]);
+        if (sortedFilters && sortedFilters.length > 0) {
+          setFilterDesc(sortedFilters.map(filter => {
+            if (filter.value === 'Others') {
+              return 'Uncategorized';
+            }
+            if (filter.field === 'Brand Name' || filter.field === 'Equipment Type') {
+              return filter.value;
+            }
+            return null;
+          }).filter(Boolean).join(' ')); 
+        }
+      }, [sortedFilters]);
 
     useEffect(() => {
       setSortedFilters(filters && filters.sort((a, b) => {
