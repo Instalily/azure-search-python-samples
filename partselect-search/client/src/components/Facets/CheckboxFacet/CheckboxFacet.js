@@ -17,7 +17,7 @@ export default function CheckboxFacet(props) {
         } else {
             setSelectedModel(model);
             setModelNameDesc(model);
-            setExactModelMatch(true);
+            // setExactModelMatch(true);
             setModelNumSearch(true);
             postSearchHandler(id);
         }

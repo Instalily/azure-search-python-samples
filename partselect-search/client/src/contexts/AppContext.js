@@ -80,7 +80,6 @@ export const AppProvider = ({ children }) => {
             axios.post(BASE_URL+'/search', body)
                 .then(response => {
                 if (JSON.stringify(response.data) === '{}') {
-                  // console.log("No data returned");
                   setQ("*");
                 }
                 else {
@@ -89,7 +88,7 @@ export const AppProvider = ({ children }) => {
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
                       setMatchedModels(response.data.matched_models);
                       setSelectModelNum(true);
-                      if (response.data.matched_models.length === 1 && response.data.matched_models[0]["ModelNum"].toLowerCase() === keywords.toLowerCase()) {
+                      if (response.data.matched_models.length === 1 && response.data.matched_models[0]["ModelNum"].toLowerCase() === keywords && keywords.toLowerCase()) {
                           setExactModelMatch(true);
                       }
                       else {
@@ -115,7 +114,7 @@ export const AppProvider = ({ children }) => {
                       setPreSelectedFilters(response.data.preselectedFilters);
                       setPreSelectedFlag(true);
                   }
-                  if (response.data.keywords.toLowerCase() !== q.toLowerCase()) {
+                  if (response.data.keywords && response.data.keywords.toLowerCase() !== q.toLowerCase()) {
                       setKeywords(response.data.keywords);
                   }
                   setIsLoading(false);
@@ -155,6 +154,12 @@ export const AppProvider = ({ children }) => {
     }, [filters]);
 
     useEffect(() => {
+      if (modelNumSearch) {
+        setExactModelMatch(true);
+      }
+    }, [modelNumSearch]);
+
+    useEffect(() => {
       if (q) {
         setCurrentPage(1);
         setFilters([]);
@@ -163,7 +168,10 @@ export const AppProvider = ({ children }) => {
         setEndOfModelList(false);
         setFacets([]);
         setSelectModelNum(false);
-        setExactModelMatch(false);
+        if (!modelNumSearch)
+        {
+          setExactModelMatch(false);
+        }
         setPreSelectedFlag(false);
         let endpoint = '/search?q=' + q + '&modelsearch=' + modelNumSearch;
         if (modelNameDesc) {
@@ -216,7 +224,7 @@ export const AppProvider = ({ children }) => {
           else {
             searchDesc = searchDesc + `<h4>You searched for: <strong><u>${keywords.trim().replaceAll("*", '')}</u></strong></h4>`;
             if (selectModelNum) {
-              searchDesc = searchDesc + "<hr><h6>Please select a model number from the panel on the left for the best results.</h6>"
+              searchDesc = searchDesc + "<hr><h6>Please select a model number from the filter panel for the best results.</h6>"
             }
           }
         }

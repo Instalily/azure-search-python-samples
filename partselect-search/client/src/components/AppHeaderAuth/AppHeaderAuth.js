@@ -7,7 +7,7 @@ export default function AppHeaderAuth() {
   // React Context: User Authentication
   const user = useAuth();
   
-  console.log(`user = ${JSON.stringify(user)}`);
+  // console.log(`user = ${JSON.stringify(user)}`);
 
   // Dynamically update auth div based on user context
   const authElement = document.querySelector('.auth');
