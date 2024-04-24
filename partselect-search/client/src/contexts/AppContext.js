@@ -104,7 +104,7 @@ export const AppProvider = ({ children }) => {
                       });
                       }
                   }
-                  if (response.data.endofModelList) {
+                  if (response.data.end_of_list) {
                       setEndOfModelList(true);
                   }
                   setFacets(allFacets);
