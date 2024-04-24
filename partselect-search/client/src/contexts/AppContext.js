@@ -126,7 +126,7 @@ export const AppProvider = ({ children }) => {
         } else {
             setIsLoading(false);
         }
-        }, [keywords, top, skip, filters, currentPage]);
+        }, [keywords, top, skip, filters, currentPage, preSelectedFlag]);
         
     useEffect(() => {
     if (preSelectedFilters && preSelectedFilters.length > 0) {
@@ -159,6 +159,10 @@ export const AppProvider = ({ children }) => {
         else {
           setPreSelectedFlag(false);
           setPreSelectedFilters([]);
+          if (!keywords || keywords.length === 0) {
+            setFilterDesc("");
+            setKeywords("*");
+          }
         }
       }
     }, [filters]);
