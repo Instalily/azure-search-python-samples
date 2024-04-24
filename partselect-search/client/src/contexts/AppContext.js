@@ -131,7 +131,6 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
     if (preSelectedFilters && preSelectedFilters.length > 0) {
         setFilters(preSelectedFilters);
-        setPreSelectedFilters([]);
     }
     }, [preSelectedFilters]);
 
@@ -150,9 +149,18 @@ export const AppProvider = ({ children }) => {
       }, [sortedFilters]);
 
     useEffect(() => {
-      setSortedFilters(filters && filters.sort((a, b) => {
-        return (sortOrder[a.field] || 4) - (sortOrder[b.field] || 4);
-    }));
+      if (preSelectedFlag)
+      {
+        if (filters === preSelectedFilters) {
+          setSortedFilters(filters && filters.sort((a, b) => {
+          return (sortOrder[a.field] || 4) - (sortOrder[b.field] || 4);
+          }));
+        }
+        else {
+          setPreSelectedFlag(false);
+          setPreSelectedFilters([]);
+        }
+      }
     }, [filters]);
 
     useEffect(() => {
