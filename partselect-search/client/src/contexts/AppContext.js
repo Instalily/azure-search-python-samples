@@ -1,6 +1,7 @@
 import React, {createContext,useState,useRef,useEffect} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
 
 export const AppContext = createContext();
 
@@ -31,23 +32,14 @@ export const AppProvider = ({ children }) => {
     const modelnameParam =  new URLSearchParams(location.search).get('modelname') ?? "";
     const [modelNameDesc, setModelNameDesc] = useState(modelnameParam);
     const [selectModelNum, setSelectModelNum] = useState(undefined);
+    const [sortedFilters, setSortedFilters] = useState([]);
+    const [filterDesc, setFilterDesc] = useState("");
     const TOTAL_RES_COUNT = 4412838;
     const sortOrder = {
         'Brand Name': 1,
         'Equipment Type': 2,
         'Part Type': 3
       };
-    
-    const sortedFilters = filters && filters.sort((a, b) => {
-        return (sortOrder[a.field] || 4) - (sortOrder[b.field] || 4);
-    });
-
-    let filterDesc = sortedFilters && sortedFilters.map(filter => {
-        if (filter.value === 'Others') {
-         return 'Uncategorized';
-        }
-        return filter.value;
-    }).join(' ');
     const [exactModelMatch, setExactModelMatch] = useState(false);
     const initialRef = useRef(true);
     const navigate = useNavigate();
@@ -132,7 +124,6 @@ export const AppProvider = ({ children }) => {
                 setIsLoading(false);
                 });
         } else {
-            setPreSelectedFlag(false);
             setIsLoading(false);
         }
         }, [keywords, top, skip, filters, currentPage]);
@@ -145,6 +136,23 @@ export const AppProvider = ({ children }) => {
     }, [preSelectedFilters]);
 
     useEffect(() => {
+      if (sortedFilters && sortedFilters.length > 0) {
+        setFilterDesc(sortedFilters && sortedFilters.map(filter => {
+          if (filter.value === 'Others') {
+           return 'Uncategorized';
+          }
+          return filter.value;
+      }).join(' '));
+      }
+    }, [sortedFilters]);
+
+    useEffect(() => {
+      setSortedFilters(filters && filters.sort((a, b) => {
+        return (sortOrder[a.field] || 4) - (sortOrder[b.field] || 4);
+    }));
+    }, [filters]);
+
+    useEffect(() => {
       if (q) {
         setCurrentPage(1);
         setFilters([]);
@@ -153,16 +161,18 @@ export const AppProvider = ({ children }) => {
         setEndOfModelList(false);
         setFacets([]);
         setSelectModelNum(false);
+        setExactModelMatch(false);
+        setPreSelectedFlag(false);
         let endpoint = '/search?q=' + q + '&modelsearch=' + modelNumSearch;
         if (modelNameDesc) {
-          endpoint = endpoint += "&modelname=" + modelNameDesc
+          endpoint = endpoint += "&modelname=" + modelNameDesc;
           if (!exactModelMatch) {
             setExactModelMatch(true);
           }
         }
         navigate(endpoint);
       }
-    }, [q, modelNumSearch]);
+    }, [q, modelNumSearch, modelNameDesc]);
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
@@ -256,8 +266,9 @@ export const AppProvider = ({ children }) => {
             value={{navigate,BASE_URL,results,setResults,resultCount,setResultCount,currentPage,setCurrentPage,qParam,topParam,skipParam,
             q,setQ,skip,setSkip,top,filters,setFilters,facets,setFacets,isLoading,setIsLoading,preSelectedFilters,setPreSelectedFilters,
             preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,modelTop,setModelTop,
-            endOfModelList,setEndOfModelList,userSearchDesc,setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,modelNameDesc,
-            setModelNameDesc,seeMore,navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch, setModelNumSearch}}>
+            endOfModelList,setEndOfModelList,userSearchDesc,setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,
+            modelNameDesc,setModelNameDesc,seeMore,navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,
+            sortedFilters,setSortedFilters,filterDesc,setFilterDesc}}>
             {children}
         </AppContext.Provider>
     );

@@ -13,7 +13,7 @@ import { AppContext } from '../../contexts/AppContext';
 
 export default function Search() {
   
-  const {isLoading,postSearchHandler,setModelNumSearch} = useContext(AppContext);
+  const {isLoading,postSearchHandler,setModelNumSearch,setModelNameDesc} = useContext(AppContext);
   var body;
   if (isLoading) {
     body = (
@@ -40,7 +40,13 @@ export default function Search() {
     </header>
     <div className="search-bar-container-searchpage">
       <div className="search-bar-searchpage">
-      <SearchBar pageContext="search" page="searchpage" onSearchHandler={postSearchHandler} setModelNumSearch={setModelNumSearch}></SearchBar>
+      <SearchBar 
+        pageContext="search" 
+        page="searchpage" 
+        onSearchHandler={postSearchHandler} 
+        setModelNumSearch={setModelNumSearch} 
+        setModelNameDesc={setModelNameDesc}>
+      </SearchBar>
       </div>
     </div>
     <main className="main main--search container-fluid">

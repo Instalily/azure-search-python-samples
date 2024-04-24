@@ -103,6 +103,8 @@ export default function SearchBar(props) {
         setIsDropdownVisible(false);
         let query = (searchTerm.length >= 3 && searchTerm.length <6) ? searchTerm.replaceAll("*", "").trim() + "*": searchTerm.replaceAll("*", "").trim();
         console.log(query);
+        props.setModelNameDesc("");
+        props.setModelNumSearch(false);
         props.onSearchHandler(query);
         setSearchTerm("");
     };
@@ -187,6 +189,8 @@ export default function SearchBar(props) {
                             setPartSuggestions([]);
                             setManufacturers([]);
                             setRecommendations([]);
+                            props.setModelNameDesc("");
+                            props.setModelNumSearch(false);
                             props.onSearchHandler(suggestion);
                             setSearchTerm("");
                           }}
@@ -219,6 +223,8 @@ export default function SearchBar(props) {
                           setPartSuggestions([]);
                           setManufacturers([]);
                           setRecommendations([]);
+                          props.setModelNameDesc("");
+                          props.setModelNumSearch(false);
                           props.onSearchHandler(manufacturerName);
                           setSearchTerm("");
                         }}
@@ -291,6 +297,8 @@ export default function SearchBar(props) {
                                     setPartSuggestions([]);
                                     setManufacturers([]);
                                     setRecommendations([]);
+                                    props.setModelNameDesc("");
+                                    props.setModelNumSearch(false);
                                     props.onSearchHandler(rec.partNum);
                                     setSearchTerm("");
                                   

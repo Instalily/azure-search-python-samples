@@ -9,7 +9,7 @@ import logo from '../../images/cognitive_search.jpg';
 import { AppContext } from "../../contexts/AppContext";
 
 export default function Home() {
-  const {navigateToSearchPage,setSelectModelNum,setModelNameDesc} = useContext(AppContext);
+  const {navigateToSearchPage,setModelNumSearch,setModelNameDesc} = useContext(AppContext);
 
   return (
     <main className="main main--home">
@@ -20,6 +20,8 @@ export default function Home() {
             <SearchBar 
               pageContext="home" 
               onSearchHandler={navigateToSearchPage} 
+              setModelNumSearch={setModelNumSearch}
+              setModelNameDesc={setModelNameDesc}
             />
           </div>
         </div>
