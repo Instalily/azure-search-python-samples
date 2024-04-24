@@ -176,7 +176,7 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
-    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc]);
+    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc]);
 
     const navigateToSearchPage = (searchTerm) => {
       if (!searchTerm || searchTerm === '') {
