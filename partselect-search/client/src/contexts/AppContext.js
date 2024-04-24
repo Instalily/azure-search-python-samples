@@ -222,13 +222,13 @@ export const AppProvider = ({ children }) => {
         if (resultCount === 0) {
           searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
           if (selectModelNum) {
-            searchDesc = searchDesc + "<h6>Please select a model number from the panel on the left for the best results.</h6>"
+            searchDesc = searchDesc + "<h6>Please select a model number from the filter panel for the best results.</h6>"
           }
         }
         else if (resultCount === TOTAL_RES_COUNT) {
           searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
           if (selectModelNum) {
-            searchDesc = searchDesc + "<h6>Please select a model number from the panel on the left for the best results.</h6>"
+            searchDesc = searchDesc + "<h6>Please select a model number from the filter panel for the best results.</h6>"
           }
         }
         else {
