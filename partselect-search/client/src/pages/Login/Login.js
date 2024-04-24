@@ -66,7 +66,7 @@ export default function Login() {
           required
           style={styles.input}
         />
-        <button type="submit" style={styles.button}>Login</button>
+        <button type="submit" style={styles.button}>Go</button>
       </form>
     </main>
   );
