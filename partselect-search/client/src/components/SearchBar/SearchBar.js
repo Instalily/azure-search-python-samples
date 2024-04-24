@@ -51,7 +51,7 @@ export default function SearchBar(props) {
             setError(null);
     
             const source = axios.CancelToken.source();
-            axios.get(BASE_URL+`/fetch_all?searchTerm=${encodeURIComponent(searchTerm)}`, {
+            axios.get(BASE_URL+`/fetch_all?searchTerm=${encodeURIComponent(searchTerm)}&user=${props.userEmail}`, {
                 cancelToken: source.token,
               })
               .then(response => response.data)
@@ -78,7 +78,7 @@ export default function SearchBar(props) {
               })
               .catch(function (error) {
                 if (axios.isCancel(error)) {
-                  console.log("Request canceled:", error.message);
+                  // console.log("Request canceled:", error.message);
                 } else {
                   console.log(error);
                   setError("Something went wrong");
@@ -95,14 +95,13 @@ export default function SearchBar(props) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(`Searching for: ${searchTerm}`);
+        // console.log(`Searching for: ${searchTerm}`);
         setModelSuggestions([]);
         setPartSuggestions([]);
         setManufacturers([]);
         setRecommendations([]);
         setIsDropdownVisible(false);
         let query = (searchTerm.length >= 3 && searchTerm.length <6) ? searchTerm.replaceAll("*", "").trim() + "*": searchTerm.replaceAll("*", "").trim();
-        console.log(query);
         props.setModelNameDesc("");
         props.setModelNumSearch(false);
         props.onSearchHandler(query);

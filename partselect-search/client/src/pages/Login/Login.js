@@ -1,32 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from '../../supabaseClient';
+import { AuthContext } from "../../contexts/AuthContext";
 
 export default function Login() {
-  const [name, setName] = useState('');
-  const navigate = useNavigate();
-
+  const [email, setEmail] = useState("");
+  const {userEmail,setUserEmail} = useContext(AuthContext);
   const handleLogin = async (event) => {
     event.preventDefault();
-    navigate('/home'); 
-
-    try {
-      let { data, error } = await supabase.from('partselect').insert([{ name: name }]);
-      console.log('Database response:', data, error);
-      
-      if (error) throw error;
-      
-      if (data) {
-        console.log('Login successful:', data);
-        navigate('/home', { replace: true });
-      } else {
-        console.log('No data returned');
-      }
-    } catch (error) {
-      console.error('Error during login:', error.message);
-      alert('Login failed!');
-    }
+    setUserEmail(email);
+    console.log("Login successful!");
   };
+
+  useEffect(() => {
+    if (userEmail) {
+      localStorage.setItem('userEmail', userEmail);
+    }
+  }, [userEmail]);
 
   const styles = {
     container: {
@@ -67,9 +57,9 @@ export default function Login() {
       <form onSubmit={handleLogin} style={styles.form}>
         <input
           type="text"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Enter your name"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Enter your email"
           required
           style={styles.input}
         />

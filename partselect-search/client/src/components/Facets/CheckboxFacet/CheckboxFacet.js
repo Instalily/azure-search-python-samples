@@ -16,7 +16,6 @@ export default function CheckboxFacet(props) {
             event.target.checked = false;
         } else {
             setSelectedModel(model);
-            console.log(model);
             setModelNameDesc(model);
             setExactModelMatch(true);
             setModelNumSearch(true);

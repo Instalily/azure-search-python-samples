@@ -1,11 +1,13 @@
-import React, {createContext,useState,useRef,useEffect} from "react";
+import React, {createContext,useState,useRef,useEffect, useContext} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
+import { AuthContext } from "./AuthContext";
 
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+    const {userEmail, setUserEmail} = useContext(AuthContext);
     let location = useLocation();
     const [results, setResults] = useState([]);
     const [resultCount, setResultCount] = useState(0);
@@ -72,13 +74,13 @@ export const AppProvider = ({ children }) => {
             skip: skip,
             filters: filters,
             model_top: modelTop,
-            modelnum_search: modelNumSearch
+            modelnum_search: modelNumSearch,
+            user: userEmail
             };
             axios.post(BASE_URL+'/search', body)
                 .then(response => {
-                console.log(response);
                 if (JSON.stringify(response.data) === '{}') {
-                  console.log("No data returned");
+                  // console.log("No data returned");
                   setQ("*");
                 }
                 else {
@@ -225,7 +227,6 @@ export const AppProvider = ({ children }) => {
           `<h2>All ${filterDesc} Parts</h2><hr/>`;
       }
       else if (filterDesc &&  filterDesc.length > 0) {
-        console.log(filterDesc)
         searchDesc = searchDesc + `<h2>${filterDesc} Parts</h2><hr/>`;
       }
 
@@ -237,7 +238,8 @@ export const AppProvider = ({ children }) => {
           const body = {
             partialModel: keywords,
             model_top: modelTop + 10,
-            filters: filters
+            filters: filters,
+            user: userEmail
           }
           axios.post(BASE_URL+`/fetch_more_models`, body)
           .then(response => {

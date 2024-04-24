@@ -8,12 +8,14 @@ import SearchBar from '../../components/SearchBar/SearchBar';
 import logo from '../../images/partselect.svg';
 import "../../components/SearchBar/SearchBar.css"
 import "./Search.css";
-import { useLocation, useNavigate } from "react-router-dom";
+// import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from '../../contexts/AppContext';
+import { AuthContext } from '../../contexts/AuthContext';
 
 export default function Search() {
   
   const {isLoading,postSearchHandler,setModelNumSearch,setModelNameDesc} = useContext(AppContext);
+  const {userEmail} = useContext(AuthContext);
   var body;
   if (isLoading) {
     body = (
@@ -45,7 +47,8 @@ export default function Search() {
         page="searchpage" 
         onSearchHandler={postSearchHandler} 
         setModelNumSearch={setModelNumSearch} 
-        setModelNameDesc={setModelNameDesc}>
+        setModelNameDesc={setModelNameDesc}
+        userEmail={userEmail}>
       </SearchBar>
       </div>
     </div>
