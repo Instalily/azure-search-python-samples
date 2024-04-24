@@ -10,8 +10,7 @@
 }
 
 .box {
-    height: 100%;
-   
+    height: 100%;;
 }
 
 .listitem {
@@ -20,6 +19,10 @@
 
 .filterlist {
     list-style: none;
+}
+
+.filterlist li {
+    margin-bottom: 8px; /* Add 8px margin at the bottom of each list item */
 }
 
 .chip {
