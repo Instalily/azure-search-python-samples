@@ -161,7 +161,7 @@ export const AppProvider = ({ children }) => {
           setPreSelectedFilters([]);
           if (!keywords || keywords.length === 0) {
             setFilterDesc("");
-            setKeywords("*");
+            // setKeywords("*");
           }
         }
       }
