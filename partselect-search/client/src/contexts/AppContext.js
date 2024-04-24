@@ -114,7 +114,7 @@ export const AppProvider = ({ children }) => {
                       setPreSelectedFilters(response.data.preselectedFilters);
                       setPreSelectedFlag(true);
                   }
-                  if (response.data.keywords && response.data.keywords.toLowerCase() !== q.toLowerCase()) {
+                  if (response.data.keywords.toLowerCase() !== q.toLowerCase()) {
                       setKeywords(response.data.keywords);
                   }
                   setIsLoading(false);
