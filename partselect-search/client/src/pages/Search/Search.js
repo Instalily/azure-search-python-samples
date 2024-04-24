@@ -36,7 +36,7 @@ export default function Search() {
     <header className="header">
       <nav className="navbar navbar-expand-lg">
         <a className="navbar-brand" href="/">
-          <img src={logo} height="50" className="navbar-logo" alt="PartSelect" />
+          <img src={logo} height="30" className="navbar-logo" alt="PartSelect" />
         </a>
       </nav>
     </header>

@@ -94,11 +94,11 @@ input {
   color: white;
   font-size: 16px;
   font-weight: 500;
-  height: 45px;
+  height: 47px;
   margin-left: 12px;
   padding-left: 20px;
   padding-right: 20px;
-  
+  margin-top: -1.75px;
 }
 
 .search-bar-container-searchpage input:focus {

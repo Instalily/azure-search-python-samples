@@ -86,5 +86,5 @@ export default function Facets(props) {
 };
 
 const FacetList = styled(List)({
-    marginTop: '32px !important'
+    marginTop: '0px !important'
 })
