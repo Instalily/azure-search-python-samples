@@ -11,6 +11,7 @@ import "./Search.css";
 // import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
+import Login from '../Login/Login';
 
 export default function Search() {
   
@@ -31,12 +32,12 @@ export default function Search() {
     )
   }
 
-  return (
+  return userEmail ? (
     <div>
     <header className="header">
       <nav className="navbar navbar-expand-lg">
         <a className="navbar-brand" href="/">
-          <img src={logo} height="30" className="navbar-logo" alt="PartSelect" />
+          <img src={logo} height="50" className="navbar-logo" alt="PartSelect" />
         </a>
       </nav>
     </header>
@@ -61,5 +62,5 @@ export default function Search() {
       </div>
     </main>
     </div>
-  );
+  ) : <Login/>;
 }
