@@ -29,23 +29,28 @@ export default function Facets(props) {
 
     var Facets;
 
-    try{
+    try {
         Facets = Object.keys(facets)
-        .filter(key => !((exactModelMatch && key === "Equipment Type") || (exactModelMatch && key === "Brand Name")))
-        .map(key => {
-            return <CheckboxFacet 
-                key={key}
-                name={key} 
-                values={facets[key]}
-                addFilter={addFilter}
-                removeFilter={removeFilter}
-                mapFacetName={mapFacetName}
-                selectedFacets={filters && filters.filter( f => f.field === key)}
-              />;
-          });
+            .sort((a, b) => {
+                if (a === "Model Number") return -1;
+                if (b === "Model Number") return 1;
+                return 0;
+            })
+            .filter(key => !((exactModelMatch && key === "Equipment Type") || (exactModelMatch && key === "Brand Name")))
+            .map(key => {
+                return <CheckboxFacet 
+                    key={key}
+                    name={key} 
+                    values={facets[key]}
+                    addFilter={addFilter}
+                    removeFilter={removeFilter}
+                    mapFacetName={mapFacetName}
+                    selectedFacets={filters && filters.filter( f => f.field === key)}
+                  />;
+              });
     } catch (error) {
         console.log(error);
-    }
+    }    
 
     const Filters = filters && filters.map((filter, index) => {
             return (

@@ -224,6 +224,7 @@ export default function SearchBar(props) {
                           setRecommendations([]);
                           props.setModelNameDesc("");
                           props.setModelNumSearch(false);
+                          console.log(searchTerm);
                           props.onSearchHandler(manufacturerName);
                           setSearchTerm("");
                         }}

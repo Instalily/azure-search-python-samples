@@ -27,7 +27,8 @@ export const AppProvider = ({ children }) => {
     const [keywords, setKeywords] = useState(q);
     const resultsPerPage = top;
     const [matchedModels, setMatchedModels] = useState(undefined);
-    const [modelTop, setModelTop] = useState(10);
+    const defaultModelTop = 10;
+    const [modelTop, setModelTop] = useState(defaultModelTop);
     const [endOfModelList, setEndOfModelList] = useState(false);
     const [userSearchDesc, setUserSearchDesc] = useState("");
     const [modelNumSearch, setModelNumSearch] = useState(modelsearchParam === "true")
@@ -66,7 +67,7 @@ export const AppProvider = ({ children }) => {
             return;
         }
     
-        if (!preSelectedFlag && filters) {
+        if (!preSelectedFlag && filters && keywords && keywords.length !== 0) {
             const body = {
             q: keywords,
             top: top,
@@ -184,7 +185,7 @@ export const AppProvider = ({ children }) => {
         setCurrentPage(1);
         setFilters([]);
         setKeywords(q);
-        setModelTop(10);
+        setModelTop(defaultModelTop);
         setEndOfModelList(false);
         setFacets([]);
         setSelectModelNum(false);
@@ -206,7 +207,7 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
-    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc]);
+    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc,matchedModels]);
 
     const navigateToSearchPage = (searchTerm) => {
       if (!searchTerm || searchTerm === '') {
@@ -225,16 +226,14 @@ export const AppProvider = ({ children }) => {
     function createUserSearchDescription() {
       let searchDesc = '';
       if (keywords && keywords.length > 0 && keywords !== "*") {
-        if (resultCount === 0) {
-          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
+        if (resultCount === 0 || resultCount === TOTAL_RES_COUNT) {
           if (selectModelNum) {
-            searchDesc = searchDesc + "<h6>Please select a model number from the filter panel for the best results.</h6>"
+            console.log(matchedModels)
+            searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList&&"+"}+ models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
+            "<h6>Please select a model number from the filter panel for the best results.</h6>"
           }
-        }
-        else if (resultCount === TOTAL_RES_COUNT) {
-          searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
-          if (selectModelNum) {
-            searchDesc = searchDesc + "<h6>Please select a model number from the filter panel for the best results.</h6>"
+          else {
+            searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
           }
         }
         else {
@@ -242,9 +241,12 @@ export const AppProvider = ({ children }) => {
             searchDesc = searchDesc + `<h3>${modelNameDesc} Parts</h3><hr>`;
           }
           else {
-            searchDesc = searchDesc + `<h4>You searched for: <strong><u>${keywords.trim().replaceAll("*", '')}</u></strong></h4>`;
             if (selectModelNum) {
-              searchDesc = searchDesc + "<hr><h6>Please select a model number from the filter panel for the best results.</h6>"
+              searchDesc = searchDesc + `<h4>${matchedModels.length}+ models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
+            "<h6>Please select a model number from the filter panel for the best results.</h6>";
+            }
+            else {
+              searchDesc = searchDesc + `<h4>You searched for: <strong><u>${keywords.trim().replaceAll("*", '')}</u></strong></h4>`;
             }
           }
         }
