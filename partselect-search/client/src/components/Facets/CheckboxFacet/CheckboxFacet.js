@@ -8,7 +8,7 @@ import { AppContext } from '../../../contexts/AppContext';
 
 export default function CheckboxFacet(props) {
     const {postSearchHandler,endOfModelList,seeMore,setModelNameDesc,setExactModelMatch,setModelNumSearch} = useContext(AppContext);
-    let [isExpanded, setIsExpanded] = useState(false);
+    let [isExpanded, setIsExpanded] = useState(true);
     let [selectedModel, setSelectedModel] = useState(null);
     const handleModelChange = (event, id, model) => {
         if (selectedModel === model) {

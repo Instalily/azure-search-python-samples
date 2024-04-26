@@ -127,6 +127,12 @@ export const AppProvider = ({ children }) => {
             setIsLoading(false);
         }
         }, [keywords, top, skip, filters, currentPage, preSelectedFlag]);
+
+  useEffect(() => {
+    if (preSelectedFlag) {
+      setPreSelectedFlag(false);
+    }
+  }, [skip]);
         
     useEffect(() => {
     if (preSelectedFilters && preSelectedFilters.length > 0) {
