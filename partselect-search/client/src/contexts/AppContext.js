@@ -105,7 +105,7 @@ export const AppProvider = ({ children }) => {
                       });
                       }
                   }
-                  if (response.data.end_of_list) {
+                  if (response.data.end_of_list && response.data.end_of_list!==null) {
                       setEndOfModelList(true);
                   }
                   setFacets(allFacets);
@@ -229,7 +229,7 @@ export const AppProvider = ({ children }) => {
         if (resultCount === 0 || resultCount === TOTAL_RES_COUNT) {
           if (selectModelNum) {
             console.log(matchedModels)
-            searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList&&"+"}+ models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
+            searchDesc = searchDesc + `<h4>${matchedModels.length}${!endOfModelList&&"+"}+ models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
             "<h6>Please select a model number from the filter panel for the best results.</h6>"
           }
           else {
