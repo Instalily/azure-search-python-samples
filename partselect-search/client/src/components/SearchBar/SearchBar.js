@@ -145,8 +145,13 @@ export default function SearchBar(props) {
               {modelSuggestions.length > 0 && <div className="suggestions-column">
                 <h3>Matching Models</h3>
                 <ul>
-                  {
-                    modelSuggestions.map((suggestion, index) => (
+                {
+                    modelSuggestions.map((suggestion, index) => {
+                      const isDuplicate = modelSuggestions.filter(item => item.ModelNum === suggestion.ModelNum).length > 1;
+                      const modelNameDesc = `${suggestion.ModelNum} ${suggestion.BrandName} ${suggestion.EquipmentType}` +
+                      `${(isDuplicate && suggestion.MfgModelNum !== "nan") ? ` (${suggestion.MfgModelNum})` : ''}`;
+                      console.log(modelNameDesc)
+                      return(
                         <li
                           key={index}
                           onClick={() => {
@@ -154,8 +159,8 @@ export default function SearchBar(props) {
                             setPartSuggestions([]);
                             setManufacturers([]);
                             setRecommendations([]);
-                            setSelectModelNum(`${suggestion["ModelNum"]} ${suggestion["BrandName"]} ${suggestion["EquipmentType"]} ${suggestion["MfgModelNum"] === "nan" ? "" : `(${suggestion["MfgModelNum"]})`}`);
-                            setModelNameDesc(`${suggestion["ModelNum"]} ${suggestion["BrandName"]} ${suggestion["EquipmentType"]} ${suggestion["MfgModelNum"] === "nan" ? "" : `(${suggestion["MfgModelNum"]})`}`);
+                            setSelectModelNum(modelNameDesc);
+                            setModelNameDesc(modelNameDesc);
                             if (props.setModelNumSearch) {
                               props.setModelNumSearch(true);
                             }
@@ -164,16 +169,16 @@ export default function SearchBar(props) {
                           }}
                         >
                           <span
-                                    dangerouslySetInnerHTML={{
-                                      __html: suggestion["ModelNum"].replace(
-                                        new RegExp(`(${searchTerm})`, "gi"),
-                                        "<strong>$1</strong>"
-                                      ),
-                                    }}
-                                  />
-                  
+                            dangerouslySetInnerHTML={{
+                              __html: modelNameDesc.replace(
+                                new RegExp(`(${searchTerm})`, "gi"),
+                                "<strong>$1</strong>"
+                              ),
+                            }}
+                          />
                         </li>
-                      ))}
+                      );
+                  })}
                 </ul>
               </div>}
               {partSuggestions.length>0 && <div className="suggestions-column">
