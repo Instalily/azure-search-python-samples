@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Collapse, Checkbox, List, ListItem, ListItemText, Radio } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import styled from 'styled-components';
@@ -7,8 +7,23 @@ import './CheckboxFacet.css';
 import { AppContext } from '../../../contexts/AppContext';
 
 export default function CheckboxFacet(props) {
-    const {postSearchHandler,endOfModelList,seeMore,setModelNameDesc,setExactModelMatch,setModelNumSearch} = useContext(AppContext);
-    let [isExpanded, setIsExpanded] = useState(true);
+    const { postSearchHandler, endOfModelList, seeMore, setModelNameDesc, setExactModelMatch, setModelNumSearch } = useContext(AppContext);
+
+    // Initialize state based on window width
+    const [isExpanded, setIsExpanded] = useState(window.innerWidth > 768);
+
+    useEffect(() => {
+        function handleResize() {
+            setIsExpanded(window.innerWidth > 768);
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     let [selectedModel, setSelectedModel] = useState(null);
     const handleModelChange = (event, id, model) => {
         if (selectedModel === model) {
@@ -17,7 +32,6 @@ export default function CheckboxFacet(props) {
         } else {
             setSelectedModel(model);
             setModelNameDesc(model);
-            // setExactModelMatch(true);
             setModelNumSearch(true);
             postSearchHandler(id);
         }
@@ -68,7 +82,7 @@ export default function CheckboxFacet(props) {
             <Collapse in={isExpanded} component="div">
                 <FacetValuesList>
                     {checkboxes}
-                    {props.name === "Model Number" && !endOfModelList && <div class="see-more" role="button" tabindex="0" onClick={seeMore}>See More...</div>}
+                    {props.name === "Model Number" && !endOfModelList && <div className="see-more" role="button" tabIndex="0" onClick={seeMore}>See More...</div>}
                 </FacetValuesList>
             </Collapse>
         </div>
@@ -85,4 +99,4 @@ const FacetValueListItem= styled(ListItem)({
 
 const FacetValuesList= styled(List)({
     marginRight: '18px !important'
-})
+});
