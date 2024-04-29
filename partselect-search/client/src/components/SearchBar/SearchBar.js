@@ -14,6 +14,7 @@ export default function SearchBar(props) {
     const [recommendations, setRecommendations] = useState([]);
     const [error, setError] = useState(null);
     const [isDropdownVisible, setIsDropdownVisible] = useState(true);
+    const [exactBrandMatch, setExactBrandMatch] = useState(false);
     const maxQueryLen = 100;
     const searchBarRef = useRef(null);
 
@@ -29,6 +30,7 @@ export default function SearchBar(props) {
     useOutsideClick(searchBarRef, onOutsideClick);
 
     useEffect(() => {
+      setExactBrandMatch(false);
         if (searchTerm.length < 3 || searchTerm.length >= maxQueryLen) {
           setIsLoading(true);
           setModelSuggestions([]);
@@ -74,6 +76,9 @@ export default function SearchBar(props) {
                 if (response.recommendations && response.recommendations.length!==0) {
                   setRecommendations(response.recommendations.slice(0, 5));
                   }     
+                if (response.exactBrandMatch && response.exactBrandMatch !== false) {
+                  setExactBrandMatch(true);
+                }
                  setIsLoading(false);
               })
               .catch(function (error) {
@@ -100,6 +105,7 @@ export default function SearchBar(props) {
         setPartSuggestions([]);
         setManufacturers([]);
         setRecommendations([]);
+        setExactBrandMatch(false);
         setIsDropdownVisible(false);
         let query = (searchTerm.length >= 3 && searchTerm.length <6) ? searchTerm.replaceAll("*", "").trim() + "*": searchTerm.replaceAll("*", "").trim();
         props.setModelNameDesc("");
@@ -107,7 +113,6 @@ export default function SearchBar(props) {
         props.onSearchHandler(query);
         setSearchTerm("");
     };
-    
 
     return (
           <div ref={searchBarRef}>
@@ -229,8 +234,13 @@ export default function SearchBar(props) {
                           setRecommendations([]);
                           props.setModelNameDesc("");
                           props.setModelNumSearch(false);
-                          console.log(searchTerm);
-                          props.onSearchHandler(manufacturerName);
+                          // console.log(searchTerm);
+                          if (!exactBrandMatch) {
+                            props.onSearchHandler(manufacturerName + ` ${searchTerm}`);
+                          }
+                          else {
+                            props.onSearchHandler(manufacturerName);
+                          }
                           setSearchTerm("");
                         }}
                       >
