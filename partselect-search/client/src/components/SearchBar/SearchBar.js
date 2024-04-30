@@ -153,11 +153,12 @@ export default function SearchBar(props) {
                 {
                     modelSuggestions.map((suggestion, index) => {
                       const isDuplicate = modelSuggestions.filter(item => item.ModelNum === suggestion.ModelNum).length > 1;
-                      const modelNameDesc = `${suggestion.ModelNum}`+ 
+                      const modelNameDropdown = `${suggestion.ModelNum}`+ 
                       `${(isDuplicate &&suggestion.BrandName!== "nan") ? ` ${suggestion.BrandName}` : ''}` + 
-                      `${(isDuplicate &&suggestion.EquipmentType!== "nan") ? ` ${suggestion.EquipmentType}` : ''}` +
+                      `${(isDuplicate && (suggestion.EquipmentType!== "nan")) ? ` ${suggestion.EquipmentType}` : ''}` +
                       `${(isDuplicate && suggestion.MfgModelNum !== "nan") ? ` (${suggestion.MfgModelNum})` : ''}`;
-                      console.log(modelNameDesc)
+                      const modelNameDesc = `${suggestion.ModelNum} ${suggestion.BrandName} ${suggestion.EquipmentType} ${suggestion.MfgModelNum !== "nan" ?? `(${suggestion.MfgModelNum})`}`;
+                      // console.log(modelNameDesc)
                       return(
                         <li
                           key={index}
@@ -177,7 +178,7 @@ export default function SearchBar(props) {
                         >
                           <span
                             dangerouslySetInnerHTML={{
-                              __html: modelNameDesc.replace(
+                              __html: modelNameDropdown.replace(
                                 new RegExp(`(${searchTerm})`, "gi"),
                                 "<strong>$1</strong>"
                               ),

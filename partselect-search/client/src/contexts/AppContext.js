@@ -11,10 +11,10 @@ export const AppProvider = ({ children }) => {
     let location = useLocation();
     const [results, setResults] = useState([]);
     const [resultCount, setResultCount] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
     const qParam = new URLSearchParams(location.search).get('q');
     const topParam = parseInt(new URLSearchParams(location.search).get('top') ?? 8, 10);
     const skipParam = parseInt(new URLSearchParams(location.search).get('skip') ?? 0, 10);
+    const [currentPage, setCurrentPage] = useState(1);
     const [q, setQ] = useState(qParam);
     const [skip, setSkip] = useState(skipParam);
     const [top] = useState(topParam);
@@ -66,8 +66,8 @@ export const AppProvider = ({ children }) => {
             setSkip(newSkip);
             return;
         }
-    
-        if (!preSelectedFlag && filters && keywords && keywords.length !== 0) {
+        
+        if (!preSelectedFlag && (filters || (keywords && keywords.length !== 0))) {
             const body = {
             q: keywords,
             top: top,
@@ -182,7 +182,6 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
       if (q) {
-        setCurrentPage(1);
         setFilters([]);
         setKeywords(q);
         setModelTop(defaultModelTop);
@@ -228,7 +227,7 @@ export const AppProvider = ({ children }) => {
       if (keywords && keywords.length > 0 && keywords !== "*") {
         if (resultCount === 0 || resultCount === TOTAL_RES_COUNT) {
           if (selectModelNum) {
-            console.log(matchedModels)
+            // console.log(matchedModels)
             searchDesc = searchDesc + `<h4>${matchedModels.length}${!endOfModelList&&"+"}+ models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
             "<h6>Please select a model number from the filter panel for the best results.</h6>"
           }

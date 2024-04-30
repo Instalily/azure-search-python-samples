@@ -9,7 +9,7 @@ export default function Result(props) {
         <a href={props.document.url}>
             <img className="card-img-top" src={props.document.imageURL} alt={`${props.document.description} ${props.document.partNum}`}></img>
             <div className="card-body">
-                <h6 className="title-style">{`${props.document.description.replace("&quot;", `"`)} ${props.document.partNum}`}</h6>
+                <h6 className="title-style">{`${props.document.description.replace(/&quot;/g, `"`)} ${props.document.partNum}`}</h6>
             </div>
             </a>
             <div className="centered-content">
