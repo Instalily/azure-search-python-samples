@@ -157,7 +157,7 @@ export default function SearchBar(props) {
                       `${(isDuplicate &&suggestion.BrandName!== "nan") ? ` ${suggestion.BrandName}` : ''}` + 
                       `${(isDuplicate && (suggestion.EquipmentType!== "nan")) ? ` ${suggestion.EquipmentType}` : ''}` +
                       `${(isDuplicate && suggestion.MfgModelNum !== "nan") ? ` (${suggestion.MfgModelNum})` : ''}`;
-                      const modelNameDesc = `${suggestion.ModelNum} ${suggestion.BrandName} ${suggestion.EquipmentType} ${suggestion.MfgModelNum !== "nan" ?? `(${suggestion.MfgModelNum})`}`;
+                      const modelNameDesc = `${suggestion.ModelNum} ${suggestion.BrandName} ${suggestion.EquipmentType} ${suggestion.MfgModelNum !== "nan" ? `(${suggestion.MfgModelNum})`: ""}`;
                       // console.log(modelNameDesc)
                       return(
                         <li
