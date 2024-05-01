@@ -227,9 +227,8 @@ export const AppProvider = ({ children }) => {
       if (keywords && keywords.length > 0 && keywords !== "*") {
         if (resultCount === 0 || resultCount === TOTAL_RES_COUNT) {
           if (selectModelNum) {
-            // console.log(matchedModels)
-            searchDesc = searchDesc + `<h4>${matchedModels.length}${!endOfModelList&&"+"}+ models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
-            "<h6>Please select a model number from the filter panel for the best results.</h6>"
+            searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList ? "" : "+"} models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
+          "<h6>Please select a model number from the filter panel for the best results.</h6>";
           }
           else {
             searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
@@ -241,7 +240,7 @@ export const AppProvider = ({ children }) => {
           }
           else {
             if (selectModelNum) {
-              searchDesc = searchDesc + `<h4>${matchedModels.length}+ models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
+              searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList ? "" : "+"} models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
             "<h6>Please select a model number from the filter panel for the best results.</h6>";
             }
             else {
