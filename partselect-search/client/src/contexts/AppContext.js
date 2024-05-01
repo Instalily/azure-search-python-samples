@@ -231,7 +231,12 @@ export const AppProvider = ({ children }) => {
           "<h6>Please select a model number from the filter panel for the best results.</h6>";
           }
           else {
-            searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
+            if(!modelNumSearch) {
+              searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
+            }
+            else {
+              searchDesc = searchDesc + `<h4>No parts found for model: <u>${modelNameDesc}</u></h4><hr/>`;
+            }
           }
         }
         else {
