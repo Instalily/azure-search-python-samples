@@ -100,7 +100,7 @@ export const AppProvider = ({ children }) => {
                           allFacets["Model Number"].push(
                               {
                                   "id": model["kModelMasterId"], 
-                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]}}` 
+                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]}` 
                               })
                       });
                       console.log(allFacets);
