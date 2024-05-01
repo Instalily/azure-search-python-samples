@@ -100,9 +100,10 @@ export const AppProvider = ({ children }) => {
                           allFacets["Model Number"].push(
                               {
                                   "id": model["kModelMasterId"], 
-                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"]})`}` 
+                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]}}` 
                               })
                       });
+                      console.log(allFacets);
                       }
                   }
                   if (response.data.end_of_list && response.data.end_of_list!==null) {

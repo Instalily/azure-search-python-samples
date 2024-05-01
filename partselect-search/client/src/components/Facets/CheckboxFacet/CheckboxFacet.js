@@ -64,7 +64,7 @@ export default function CheckboxFacet(props) {
                             checked={selectedModel === facetValue.value}
                             onChange={(event) => handleModelChange(event, facetValue.id, facetValue.value)}
                         />
-                        <ListItemText primary={facetValue.value}/>
+                        <ListItemText primary={`${facetValue.value}`}/>
                     </>
                 )}
             </FacetValueListItem>

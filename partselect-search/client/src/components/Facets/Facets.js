@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import "./Facets.css";
 import { AppContext } from '../../contexts/AppContext';
 
-export default function Facets(props) {
+export default function Facets() {
     const {facets,filters,setFilters,exactModelMatch} = useContext(AppContext);
     function mapFacetName(facetName) {
         const capitalizeFirstLetter = (string) =>
