@@ -220,7 +220,7 @@ export default function SearchBar(props) {
                 </ul>
               </div>}
               {manufacturers.length > 0 && <div className="suggestions-column">
-                <h3>Manufacturers</h3>
+                <h3>Brands</h3>
                 <ul>
                   {
                   manufacturers.map((manu, index) => {
@@ -275,7 +275,7 @@ export default function SearchBar(props) {
     
                 }}
               >
-                <h3>Recommendations</h3>
+                <h3>Top Part Recommendations</h3>
                 <ul>
                   {
                     recommendations.map((rec, index) => (
