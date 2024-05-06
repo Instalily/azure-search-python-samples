@@ -183,7 +183,6 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
       if (q) {
-        setFilters([]);
         setKeywords(q);
         setModelTop(defaultModelTop);
         setEndOfModelList(false);
@@ -191,6 +190,7 @@ export const AppProvider = ({ children }) => {
         setSelectModelNum(false);
         if (!modelNumSearch)
         {
+          setFilters([]);
           setExactModelMatch(false);
         }
         setPreSelectedFlag(false);
