@@ -67,12 +67,12 @@ export const AppProvider = ({ children }) => {
             return;
         }
         
-        if (!preSelectedFlag && (filters || (keywords && keywords.length !== 0))) {
+        if (!preSelectedFlag && (filters && (keywords && keywords.length !== 0))) {
             const body = {
             q: keywords,
             top: top,
             skip: skip,
-            filters: filters,
+            filters: filters ?? [],
             model_top: modelTop,
             modelnum_search: modelNumSearch,
             user: userEmail
