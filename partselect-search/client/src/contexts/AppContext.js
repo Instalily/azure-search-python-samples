@@ -75,7 +75,7 @@ export const AppProvider = ({ children }) => {
             filters: filters ?? [],
             model_top: modelTop,
             modelnum_search: modelNumSearch,
-            user: userEmail
+            // user: userEmail
             };
             axios.post(BASE_URL+'/search', body)
                 .then(response => {
@@ -276,7 +276,7 @@ export const AppProvider = ({ children }) => {
             partialModel: keywords,
             model_top: modelTop + 10,
             filters: filters,
-            user: userEmail
+            // user: userEmail
           }
           axios.post(BASE_URL+`/fetch_more_models`, body)
           .then(response => {

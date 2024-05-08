@@ -12,9 +12,10 @@ import Login from "../Login/Login";
 
 export default function Home() {
   const {navigateToSearchPage,setModelNumSearch,setModelNameDesc} = useContext(AppContext);
-  const {userEmail, setUserEmail} = useContext(AuthContext);
+  // const {userEmail, setUserEmail} = useContext(AuthContext);
   
-  return userEmail ? (
+  return (
+  // userEmail ? (
     <main className="main main--home">
       <div className="SearchApp">
       <header className="App-header">
@@ -25,12 +26,13 @@ export default function Home() {
               onSearchHandler={navigateToSearchPage} 
               setModelNumSearch={setModelNumSearch}
               setModelNameDesc={setModelNameDesc}
-              userEmail={userEmail}
+              // userEmail={userEmail}
             />
           </div>
         </div>
       </header>
     </div>
     </main>
-  ) : <Login />;
+  )
+  // ) : <Login />;
 };

@@ -16,7 +16,7 @@ import Login from '../Login/Login';
 export default function Search() {
   
   const {isLoading,postSearchHandler,setModelNumSearch,setModelNameDesc} = useContext(AppContext);
-  const {userEmail} = useContext(AuthContext);
+  // const {userEmail} = useContext(AuthContext);
   var body;
   if (isLoading) {
     body = (
@@ -32,7 +32,8 @@ export default function Search() {
     )
   }
 
-  return userEmail ? (
+  return (
+  //  userEmail ? (
     <div>
     <header className="header">
       <nav className="navbar navbar-expand-lg">
@@ -49,7 +50,8 @@ export default function Search() {
         onSearchHandler={postSearchHandler} 
         setModelNumSearch={setModelNumSearch} 
         setModelNameDesc={setModelNameDesc}
-        userEmail={userEmail}>
+        // userEmail={userEmail}
+        >
       </SearchBar>
       </div>
     </div>
@@ -62,5 +64,6 @@ export default function Search() {
       </div>
     </main>
     </div>
-  ) : <Login/>;
+  );
+  // : <Login/>;
 }
