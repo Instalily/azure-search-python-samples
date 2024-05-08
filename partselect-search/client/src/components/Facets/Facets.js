@@ -30,6 +30,7 @@ export default function Facets() {
     var Facets;
 
     try {
+        console.log(filters)
         Facets = Object.keys(facets)
             .sort((a, b) => {
                 if (a === "Model Number") return -1;

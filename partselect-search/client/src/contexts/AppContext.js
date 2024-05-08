@@ -67,7 +67,7 @@ export const AppProvider = ({ children }) => {
             return;
         }
         
-        if (!preSelectedFlag && (filters && (keywords && keywords.length !== 0))) {
+        if (!preSelectedFlag && (filters || (keywords && keywords.length !== 0))) {
             const body = {
             q: keywords,
             top: top,
