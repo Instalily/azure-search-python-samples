@@ -188,6 +188,9 @@ export const AppProvider = ({ children }) => {
         setEndOfModelList(false);
         setFacets([]);
         setSelectModelNum(false);
+        if (!filters) {
+          setFilters([]);
+        }
         if (!modelNumSearch)
         {
           setFilters([]);
