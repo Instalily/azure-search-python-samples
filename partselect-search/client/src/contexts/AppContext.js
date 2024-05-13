@@ -282,6 +282,7 @@ export const AppProvider = ({ children }) => {
           .then(response => {
               let allFacets = [];
               if (response.data.matched_models && response.data.matched_models.length > 0) {
+                setMatchedModels(response.data.matched_models);
                 response.data.matched_models.map((model) => {
                   allFacets.push({
                     "id": model["kModelMasterId"], 
