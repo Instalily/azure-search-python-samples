@@ -107,10 +107,10 @@ export default function SearchBar(props) {
         setRecommendations([]);
         setExactBrandMatch(false);
         setIsDropdownVisible(false);
-        let query = searchTerm.replaceAll("*", "").trim()+"*";
+        // let query = searchTerm.replaceAll("*", "").trim()+"*";
         props.setModelNameDesc("");
         props.setModelNumSearch(false);
-        props.onSearchHandler(query);
+        props.onSearchHandler(searchTerm);
         setSearchTerm("");
     };
 
