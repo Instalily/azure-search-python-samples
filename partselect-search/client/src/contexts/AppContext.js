@@ -100,10 +100,10 @@ export const AppProvider = ({ children }) => {
                           allFacets["Model Number"].push(
                               {
                                   "id": model["kModelMasterId"], 
-                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]}` 
+                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"]})`}` 
                               })
                       });
-                      console.log(allFacets);
+                      // console.log(allFacets);
                       }
                   }
                   if (response.data.end_of_list && response.data.end_of_list!==null) {
@@ -282,9 +282,10 @@ export const AppProvider = ({ children }) => {
           .then(response => {
               let allFacets = [];
               if (response.data.matched_models && response.data.matched_models.length > 0) {
-                console.log(response.data.matched_models)
+                // console.log(response.data.matched_models)
                   setMatchedModels(response.data.matched_models);
                 response.data.matched_models.map((model) => {
+                  // console.log(model)
                   allFacets.push({
                     "id": model["kModelMasterId"], 
                     "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"]})`}` 
