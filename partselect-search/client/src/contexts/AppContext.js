@@ -231,12 +231,12 @@ export const AppProvider = ({ children }) => {
       if (keywords && keywords.length > 0 && keywords !== "*") {
         if (resultCount === 0 || resultCount === TOTAL_RES_COUNT) {
           if (selectModelNum) {
-            searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList ? "" : "+"} models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
+            searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList ? "" : "+"} models matched your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
           "<h6>Please select a model number from the filter panel for the best results.</h6>";
           }
           else {
             if(!modelNumSearch) {
-              searchDesc = searchDesc + `<h4>No results found for your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
+              searchDesc = searchDesc + `<h4>No results found for your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
             }
             else {
               searchDesc = searchDesc + `<h4>No parts found for model: <u>${modelNameDesc}</u></h4><hr/>`;
@@ -249,7 +249,7 @@ export const AppProvider = ({ children }) => {
           }
           else {
             if (selectModelNum) {
-              searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList ? "" : "+"} models matched your query: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
+              searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList ? "" : "+"} models matched your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
             "<h6>Please select a model number from the filter panel for the best results.</h6>";
             }
             else {
@@ -282,7 +282,8 @@ export const AppProvider = ({ children }) => {
           .then(response => {
               let allFacets = [];
               if (response.data.matched_models && response.data.matched_models.length > 0) {
-                setMatchedModels(response.data.matched_models);
+                console.log(response.data.matched_models)
+                  setMatchedModels(response.data.matched_models);
                 response.data.matched_models.map((model) => {
                   allFacets.push({
                     "id": model["kModelMasterId"], 

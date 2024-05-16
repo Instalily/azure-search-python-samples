@@ -31,11 +31,11 @@ export default function Facets() {
 
     try {
         Facets = Object.keys(facets)
-            .sort((a, b) => {
-                if (a === "Model Number") return -1;
-                if (b === "Model Number") return 1;
-                return 0;
-            })
+            // .sort((a, b) => {
+            //     if (a === "Model Number") return -1;
+            //     if (b === "Model Number") return 1;
+            //     return 0;
+            // })
             .filter(key => !((exactModelMatch && key === "Equipment Type") || (exactModelMatch && key === "Brand Name")))
             .map(key => {
                 return <CheckboxFacet 
