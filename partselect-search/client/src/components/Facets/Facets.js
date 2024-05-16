@@ -28,15 +28,25 @@ export default function Facets() {
     }
 
     var Facets;
+    const sortOrder = ["Brand Name", "Equipment Type", "Part Type", "Model Number"];
 
     try {
         Facets = Object.keys(facets)
-            // .sort((a, b) => {
-            //     if (a === "Model Number") return -1;
-            //     if (b === "Model Number") return 1;
-            //     return 0;
-            // })
             .filter(key => !((exactModelMatch && key === "Equipment Type") || (exactModelMatch && key === "Brand Name")))
+            .sort((a, b) => {
+                const indexA = sortOrder.indexOf(a);
+                const indexB = sortOrder.indexOf(b);
+        
+                if (indexA !== -1 && indexB !== -1) {
+                    return indexA - indexB;
+                } else if (indexA !== -1) {
+                    return -1;
+                } else if (indexB !== -1) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
             .map(key => {
                 return <CheckboxFacet 
                     key={key}
