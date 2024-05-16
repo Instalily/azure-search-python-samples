@@ -100,8 +100,8 @@ export const AppProvider = ({ children }) => {
                           allFacets["Model Number"].push(
                               {
                                   "id": model["kModelMasterId"], 
-                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"]})`}` 
-                              })
+                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
+                                })
                       });
                       // console.log(allFacets);
                       }
@@ -288,7 +288,7 @@ export const AppProvider = ({ children }) => {
                   // console.log(model)
                   allFacets.push({
                     "id": model["kModelMasterId"], 
-                    "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"]})`}` 
+                    "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
                     });
                 })
               }

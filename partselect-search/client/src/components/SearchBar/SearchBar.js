@@ -153,7 +153,6 @@ export default function SearchBar(props) {
                 {
                     modelSuggestions.map((suggestion, index) => {
                       const isDuplicate = modelSuggestions.filter(item => item.ModelNum === suggestion.ModelNum).length > 1;
-                      console.log(isDuplicate)
                       const modelNameDropdown = `${suggestion.ModelNum}`+ 
                       `${(isDuplicate &&suggestion.BrandName!== "nan") ? ` ${suggestion.BrandName}` : ''}` + 
                       `${(isDuplicate && (suggestion.EquipmentType!== "nan")) ? ` ${suggestion.EquipmentType}` : ''}` +
