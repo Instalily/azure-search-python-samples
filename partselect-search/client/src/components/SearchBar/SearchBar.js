@@ -346,7 +346,7 @@ export default function SearchBar(props) {
             </div>
           )}
           {
-            (searchTerm && searchTerm.length>0 && searchTerm.length<3 && searchTerm.length<maxQueryLen) && (modelSuggestions.length === 0 &&
+            (searchTerm && searchTerm.length>0 && searchTerm.length<=3 && searchTerm.length<maxQueryLen) && (modelSuggestions.length === 0 &&
               partSuggestions.length === 0 &&
               manufacturers.length === 0 &&
               recommendations.length === 0) && (!isLoading)

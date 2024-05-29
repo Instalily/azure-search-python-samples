@@ -84,6 +84,7 @@ export const AppProvider = ({ children }) => {
                 }
                 else {
                   setResults(response.data.results);
+                  console.log(response.data.facets)
                   let allFacets = response.data.facets;
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
                       setMatchedModels(response.data.matched_models);
@@ -100,15 +101,15 @@ export const AppProvider = ({ children }) => {
                           allFacets["Model Number"].push(
                               {
                                   "id": model["kModelMasterId"], 
-                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
+                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === null ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
                                 })
                       });
-                      // console.log(allFacets);
                       }
                   }
                   if (response.data.end_of_list && response.data.end_of_list!==null) {
                       setEndOfModelList(true);
                   }
+                  console.log(allFacets); 
                   setFacets(allFacets);
                   setResultCount(response.data.count);
                   if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
@@ -282,8 +283,8 @@ export const AppProvider = ({ children }) => {
           .then(response => {
               let allFacets = [];
               if (response.data.matched_models && response.data.matched_models.length > 0) {
-                // console.log(response.data.matched_models)
-                  setMatchedModels(response.data.matched_models);
+                console.log(response.data.matched_models)
+                  setMatchedModels([...matchedModels, response.data.matched_models]);
                 response.data.matched_models.map((model) => {
                   // console.log(model)
                   allFacets.push({
