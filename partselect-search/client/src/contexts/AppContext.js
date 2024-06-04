@@ -116,8 +116,7 @@ export const AppProvider = ({ children }) => {
                 response.data.matched_models.length === 1 &&
                 response.data.matched_models[0][
                   "kModelMasterId"
-                ].toLowerCase() === keywords &&
-                keywords.toLowerCase()
+                ].toLowerCase() === keywords
               ) {
                 setExactModelMatch(true);
               } else {
