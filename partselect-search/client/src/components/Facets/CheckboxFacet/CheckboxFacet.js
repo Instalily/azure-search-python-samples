@@ -7,7 +7,10 @@ import './CheckboxFacet.css';
 import { AppContext } from '../../../contexts/AppContext';
 
 export default function CheckboxFacet(props) {
-    const { postSearchHandler, setModelNameDesc, seeMore, endOfModelList, setExactModelMatch, setModelNumSearch } = useContext(AppContext);
+    const { postSearchHandler, seeMore, setModelNameDesc, matchedModels, endOfModelList, setEndOfModelList, modelTop, setModelTop,
+        matchedBrands, endOfBrandList, setEndOfBrandList, brandTop, setBrandTop, matchedEqTypes, endOfEqTypeList, setEndOfEqTypeList, 
+        eqTypeTop, setEqTypeTop, matchedPartTypes, endOfPartTypeList, setEndOfPartTypeList, partTypeTop, setPartTypeTop, setModelNumSearch } = useContext(AppContext);
+
     const [isExpanded, setIsExpanded] = useState(window.innerWidth > 768);
 
     useEffect(() => {
@@ -24,6 +27,21 @@ export default function CheckboxFacet(props) {
         setModelNumSearch(true);
         postSearchHandler(id);
     };
+
+    const renderSeeMoreButton = (props) => {
+        switch (props.name) {
+          case "Model Number":
+            return !endOfModelList && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeMore(props.name, matchedModels, endOfModelList, setEndOfModelList, modelTop, setModelTop)}}>See More...</div>;
+          case "Brand Name":
+            return !endOfBrandList && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeMore(props.name, matchedBrands, endOfBrandList, setEndOfBrandList, brandTop, setBrandTop)}}>See More...</div>;
+          case "Equipment Type":
+            return !endOfEqTypeList && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeMore(props.name, matchedEqTypes, endOfEqTypeList, setEndOfEqTypeList, eqTypeTop, setEqTypeTop)}}>See More...</div>;
+          case "Part Type":
+            return !endOfPartTypeList && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeMore(props.name, matchedPartTypes, endOfPartTypeList, setEndOfPartTypeList, partTypeTop, setPartTypeTop)}}>See More...</div>;
+          default:
+            return null;
+        }
+      };      
 
     const facetItems = props.values.map(facetValue => {
         const isSelected = props.selectedFacets.some(facet => facet.value === facetValue.value);
@@ -66,7 +84,7 @@ export default function CheckboxFacet(props) {
             <Collapse in={isExpanded} component="div">
                 <List component="div" disablePadding>
                     {facetItems}
-                    {props.name === "Model Number" && !endOfModelList && <div className="see-more" role="button" tabIndex="0" onClick={seeMore}>See More...</div>}
+                    {renderSeeMoreButton(props)}
                 </List>
             </Collapse>
         </div>

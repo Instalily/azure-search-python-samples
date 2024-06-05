@@ -26,9 +26,18 @@ export const AppProvider = ({ children }) => {
     const [preSelectedFlag, setPreSelectedFlag] = useState(false);
     const [keywords, setKeywords] = useState(q);
     const resultsPerPage = top;
+    const defaultFacetLen = 10;
+    const [matchedBrands, setMatchedBrands] = useState(undefined);
+    const [matchedEqTypes, setMatchedEqTypes] = useState(undefined);
+    const [matchedPartTypes, setMatchedPartTypes] = useState(undefined);
     const [matchedModels, setMatchedModels] = useState(undefined);
-    // const defaultModelTop = 1000;
-    const [modelTop, setModelTop] = useState(10);
+    const [brandTop, setBrandTop] = useState(defaultFacetLen);
+    const [eqTypeTop, setEqTypeTop] = useState(defaultFacetLen);
+    const [partTypeTop, setPartTypeTop] = useState(defaultFacetLen);
+    const [modelTop, setModelTop] = useState(defaultFacetLen);
+    const [endOfBrandList, setEndOfBrandList] = useState(false);
+    const [endOfEqTypeList, setEndOfEqTypeList] = useState(false);
+    const [endOfPartTypeList, setEndOfPartTypeList] = useState(false);
     const [endOfModelList, setEndOfModelList] = useState(false);
     const [userSearchDesc, setUserSearchDesc] = useState("");
     const [modelNumSearch, setModelNumSearch] = useState(modelsearchParam === "true")
@@ -84,7 +93,43 @@ export const AppProvider = ({ children }) => {
                 }
                 else {
                   setResults(response.data.results);
-                  let allFacets = response.data.facets;
+                  let allFacets = {...response.data.facets};
+                  if ("Brand Name" in response.data.facets && response.data.facets["Brand Name"]) {
+                    setMatchedBrands(response.data.facets["Brand Name"]);
+                    allFacets["Brand Name"] = [];
+                    response.data.facets["Brand Name"]
+                      .slice(0, brandTop)
+                      .map((brand) => {
+                        allFacets["Brand Name"].push(brand);
+                      });
+                    if (response.data.facets["Brand Name"].length <= brandTop) {
+                      setEndOfBrandList(true);
+                    }
+                  } 
+                  if ("Equipment Type" in response.data.facets && response.data.facets["Equipment Type"]) {
+                    setMatchedEqTypes(response.data.facets["Equipment Type"]);
+                    allFacets["Equipment Type"] = [];
+                    response.data.facets["Equipment Type"]
+                      .slice(0, eqTypeTop)
+                      .map((eq) => {
+                        allFacets["Equipment Type"].push(eq);
+                      });
+                      if (response.data.facets["Equipment Type"].length <= eqTypeTop) {
+                        setEndOfEqTypeList(true);
+                      }
+                  } 
+                  if ("Part Type" in response.data.facets && response.data.facets["Brand Name"]) {
+                    setMatchedPartTypes(response.data.facets["Part Type"]);
+                    allFacets["Part Type"] = [];
+                    response.data.facets["Part Type"]
+                      .slice(0, partTypeTop)
+                      .map((eq) => {
+                        allFacets["Part Type"].push(eq);
+                      });
+                      if (response.data.facets["Part Type"].length <= partTypeTop) {
+                        setEndOfPartTypeList(true);
+                      }
+                  } 
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
                       setMatchedModels(response.data.matched_models);
                       setSelectModelNum(true);
@@ -97,7 +142,7 @@ export const AppProvider = ({ children }) => {
                       if (!exactModelMatch) {
                       allFacets["Model Number"] = [];
                       response.data.matched_models
-                          .slice(0, 10)
+                          .slice(0, modelTop)
                           .map((model) => {
                           allFacets["Model Number"].push(
                               {
@@ -105,12 +150,12 @@ export const AppProvider = ({ children }) => {
                                   "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
                                 })
                       });
-                      // console.log(allFacets);
                       }
                   }
-                  if (response.data.matched_models && response.data.matched_models.length <=10) {
+                  if (response.data.matched_models && response.data.matched_models.length <=modelTop) {
                       setEndOfModelList(true);
                   }
+                  console.log("Facets: ", allFacets)
                   setFacets(allFacets);
                   setResultCount(response.data.count);
                   if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
@@ -187,8 +232,14 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
       if (q) {
         setKeywords(q);
-        // setModelTop(defaultModelTop);
-        // setEndOfModelList(false);
+        setBrandTop(defaultFacetLen);
+        setEqTypeTop(defaultFacetLen);
+        setPartTypeTop(defaultFacetLen);
+        setModelTop(defaultFacetLen);
+        setEndOfBrandList(false);
+        setEndOfEqTypeList(false);
+        setEndOfPartTypeList(false);
+        setEndOfModelList(false);
         setFacets([]);
         setSelectModelNum(false);
         if (!filters) {
@@ -273,36 +324,47 @@ export const AppProvider = ({ children }) => {
       return searchDesc;
     }
 
-      const seeMore = () => {
-        if (!endOfModelList) {
-              let allFacets = [];
-              if (matchedModels && matchedModels.length > 0) {
-                matchedModels
-                .slice(0, modelTop+10)
-                .map((model) => {
-                  // console.log(model)
+
+    const seeMore = (facetType, facetList, endOfFacetTypeList, setEndOfFacetTypeList, facetTop, setFacetTop) => {
+      if (!endOfFacetTypeList) {
+            let allFacets = [];
+            if (facetList && facetList.length > 0) {
+              facetList
+              .slice(0, facetTop+10)
+              .map((facet) => {
+                if (facetType === "Model Number") {
                   allFacets.push({
-                    "id": model["kModelMasterId"], 
-                    "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
-                    });
-                })
-              }
-              setModelTop(modelTop+10);
-              if (matchedModels.length < modelTop+10) {
-                setEndOfModelList(true);
-              }
-              setFacets({...facets, "Model Number": allFacets});
-        }
-    }
+                  "id": facet["kModelMasterId"], 
+                  "value": `${facet["ModelNum"]} ${facet["BrandName"]} ${facet["EquipmentType"]} ${facet["MfgModelNum"] === "nan" ? "" : `(${facet["MfgModelNum"].replace(/[()]/g, "")})`}` 
+                  });
+                  
+                }
+                else {
+                  allFacets.push(facet);
+                }
+              })
+            }
+            console.log({...facets, [facetType]: allFacets})
+            setFacets({...facets, [facetType]: allFacets});
+            console.log(setFacetTop)
+            setFacetTop(facetTop+10);
+            if (facetList.length < facetTop+10) {
+              setEndOfFacetTypeList(true);
+            }
+      }
+  }
+  
 
     return (
         <AppContext.Provider
             value={{navigate,BASE_URL,results,setResults,resultCount,setResultCount,currentPage,setCurrentPage,qParam,topParam,skipParam,
             q,setQ,skip,setSkip,top,filters,setFilters,facets,setFacets,isLoading,setIsLoading,preSelectedFilters,setPreSelectedFilters,
-            preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,modelTop, setModelTop,
-            endOfModelList, setEndOfModelList,userSearchDesc,setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,seeMore,
-            modelNameDesc,setModelNameDesc,navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,
-            sortedFilters,setSortedFilters,filterDesc,setFilterDesc}}>
+            preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,matchedBrands, setMatchedBrands, 
+            matchedEqTypes, setMatchedEqTypes,matchedPartTypes, setMatchedPartTypes, modelTop, setModelTop, brandTop, setBrandTop, endOfBrandList, setEndOfBrandList, 
+            eqTypeTop, setEqTypeTop, endOfEqTypeList, setEndOfEqTypeList, partTypeTop, setPartTypeTop, endOfPartTypeList, setEndOfPartTypeList,endOfModelList, setEndOfModelList,userSearchDesc,
+            setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,modelNameDesc,setModelNameDesc,seeMore,
+            navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,sortedFilters,setSortedFilters,
+            filterDesc,setFilterDesc}}>
             {children}
         </AppContext.Provider>
     );
