@@ -7,7 +7,7 @@ import './CheckboxFacet.css';
 import { AppContext } from '../../../contexts/AppContext';
 
 export default function CheckboxFacet(props) {
-    const { postSearchHandler, setModelNameDesc, setExactModelMatch, setModelNumSearch } = useContext(AppContext);
+    const { postSearchHandler, setModelNameDesc, seeMore, endOfModelList, setExactModelMatch, setModelNumSearch } = useContext(AppContext);
     const [isExpanded, setIsExpanded] = useState(window.innerWidth > 768);
 
     useEffect(() => {
@@ -66,7 +66,7 @@ export default function CheckboxFacet(props) {
             <Collapse in={isExpanded} component="div">
                 <List component="div" disablePadding>
                     {facetItems}
-                    {/* {props.name === "Model Number" && !endOfModelList && <div className="see-more" role="button" tabIndex="0" onClick={seeMore}>See More...</div>} */}
+                    {props.name === "Model Number" && !endOfModelList && <div className="see-more" role="button" tabIndex="0" onClick={seeMore}>See More...</div>}
                 </List>
             </Collapse>
         </div>

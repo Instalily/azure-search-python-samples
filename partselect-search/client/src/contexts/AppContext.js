@@ -28,8 +28,8 @@ export const AppProvider = ({ children }) => {
     const resultsPerPage = top;
     const [matchedModels, setMatchedModels] = useState(undefined);
     // const defaultModelTop = 1000;
-    // const [modelTop, setModelTop] = useState(defaultModelTop);
-    // const [endOfModelList, setEndOfModelList] = useState(false);
+    const [modelTop, setModelTop] = useState(10);
+    const [endOfModelList, setEndOfModelList] = useState(false);
     const [userSearchDesc, setUserSearchDesc] = useState("");
     const [modelNumSearch, setModelNumSearch] = useState(modelsearchParam === "true")
     const modelnameParam =  new URLSearchParams(location.search).get('modelname') ?? "";
@@ -85,13 +85,6 @@ export const AppProvider = ({ children }) => {
                 else {
                   setResults(response.data.results);
                   let allFacets = response.data.facets;
-                  // let selectFilt = [];
-                  // if (allFacets["Brand Name"].length === 1) {                    selectFilt.push({"field": "Brand Name", "value": allFacets["Brand Name"][0]["value"]});
-                  // }
-                  // if (allFacets["Equipment Type"].length === 1) {
-                  //   selectFilt.push({"field": "Equipment Type", "value": allFacets["Equipment Type"][0]["value"]});
-                  // }
-                  // setPreSelectedFilters(selectFilt);
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
                       setMatchedModels(response.data.matched_models);
                       setSelectModelNum(true);
@@ -103,7 +96,9 @@ export const AppProvider = ({ children }) => {
                       }
                       if (!exactModelMatch) {
                       allFacets["Model Number"] = [];
-                      response.data.matched_models.map((model) => {
+                      response.data.matched_models
+                          .slice(0, 10)
+                          .map((model) => {
                           allFacets["Model Number"].push(
                               {
                                   "id": model["kModelMasterId"], 
@@ -113,9 +108,9 @@ export const AppProvider = ({ children }) => {
                       // console.log(allFacets);
                       }
                   }
-                  // if (response.data.end_of_list && response.data.end_of_list!==null) {
-                  //     setEndOfModelList(true);
-                  // }
+                  if (response.data.matched_models && response.data.matched_models.length <=10) {
+                      setEndOfModelList(true);
+                  }
                   setFacets(allFacets);
                   setResultCount(response.data.count);
                   if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
@@ -278,45 +273,34 @@ export const AppProvider = ({ children }) => {
       return searchDesc;
     }
 
-    //   const seeMore = () => {
-    //     if (!endOfModelList) {
-    //       const body = {
-    //         partialModel: keywords,
-    //         // model_top: modelTop + 10,
-    //         filters: filters,
-    //         // user: userEmail
-    //       }
-    //       axios.post(BASE_URL+`/fetch_more_models`, body)
-    //       .then(response => {
-    //           let allFacets = [];
-    //           if (response.data.matched_models && response.data.matched_models.length > 0) {
-    //             // console.log(response.data.matched_models)
-    //               setMatchedModels(response.data.matched_models);
-    //             response.data.matched_models.map((model) => {
-    //               // console.log(model)
-    //               allFacets.push({
-    //                 "id": model["kModelMasterId"], 
-    //                 "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
-    //                 });
-    //             })
-    //           }
-    //           if (response.data.end_of_list) {
-    //             setEndOfModelList(response.data.end_of_list);
-    //           }
-    //           setFacets({...facets, "Model Number": allFacets});
-    //           // setModelTop(modelTop + 10);
-    //       }).catch(error => {
-    //           console.error(error);
-    //         });
-    //     }
-    // }
+      const seeMore = () => {
+        if (!endOfModelList) {
+              let allFacets = [];
+              if (matchedModels && matchedModels.length > 0) {
+                matchedModels
+                .slice(0, modelTop+10)
+                .map((model) => {
+                  // console.log(model)
+                  allFacets.push({
+                    "id": model["kModelMasterId"], 
+                    "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
+                    });
+                })
+              }
+              setModelTop(modelTop+10);
+              if (matchedModels.length < modelTop+10) {
+                setEndOfModelList(true);
+              }
+              setFacets({...facets, "Model Number": allFacets});
+        }
+    }
 
     return (
         <AppContext.Provider
             value={{navigate,BASE_URL,results,setResults,resultCount,setResultCount,currentPage,setCurrentPage,qParam,topParam,skipParam,
             q,setQ,skip,setSkip,top,filters,setFilters,facets,setFacets,isLoading,setIsLoading,preSelectedFilters,setPreSelectedFilters,
-            preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,
-            userSearchDesc,setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,
+            preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,modelTop, setModelTop,
+            endOfModelList, setEndOfModelList,userSearchDesc,setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,seeMore,
             modelNameDesc,setModelNameDesc,navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,
             sortedFilters,setSortedFilters,filterDesc,setFilterDesc}}>
             {children}
