@@ -27,9 +27,9 @@ export const AppProvider = ({ children }) => {
     const [keywords, setKeywords] = useState(q);
     const resultsPerPage = top;
     const [matchedModels, setMatchedModels] = useState(undefined);
-    const defaultModelTop = 10;
-    const [modelTop, setModelTop] = useState(defaultModelTop);
-    const [endOfModelList, setEndOfModelList] = useState(false);
+    // const defaultModelTop = 1000;
+    // const [modelTop, setModelTop] = useState(defaultModelTop);
+    // const [endOfModelList, setEndOfModelList] = useState(false);
     const [userSearchDesc, setUserSearchDesc] = useState("");
     const [modelNumSearch, setModelNumSearch] = useState(modelsearchParam === "true")
     const modelnameParam =  new URLSearchParams(location.search).get('modelname') ?? "";
@@ -73,7 +73,7 @@ export const AppProvider = ({ children }) => {
             top: top,
             skip: skip,
             filters: filters ?? [],
-            model_top: modelTop,
+            // model_top: modelTop,
             modelnum_search: modelNumSearch,
             // user: userEmail
             };
@@ -85,6 +85,13 @@ export const AppProvider = ({ children }) => {
                 else {
                   setResults(response.data.results);
                   let allFacets = response.data.facets;
+                  // let selectFilt = [];
+                  // if (allFacets["Brand Name"].length === 1) {                    selectFilt.push({"field": "Brand Name", "value": allFacets["Brand Name"][0]["value"]});
+                  // }
+                  // if (allFacets["Equipment Type"].length === 1) {
+                  //   selectFilt.push({"field": "Equipment Type", "value": allFacets["Equipment Type"][0]["value"]});
+                  // }
+                  // setPreSelectedFilters(selectFilt);
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
                       setMatchedModels(response.data.matched_models);
                       setSelectModelNum(true);
@@ -106,9 +113,9 @@ export const AppProvider = ({ children }) => {
                       // console.log(allFacets);
                       }
                   }
-                  if (response.data.end_of_list && response.data.end_of_list!==null) {
-                      setEndOfModelList(true);
-                  }
+                  // if (response.data.end_of_list && response.data.end_of_list!==null) {
+                  //     setEndOfModelList(true);
+                  // }
                   setFacets(allFacets);
                   setResultCount(response.data.count);
                   if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
@@ -139,6 +146,7 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
     if (preSelectedFilters && preSelectedFilters.length > 0) {
         setFilters(preSelectedFilters);
+        console.log(preSelectedFilters);
     }
     }, [preSelectedFilters]);
 
@@ -184,8 +192,8 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
       if (q) {
         setKeywords(q);
-        setModelTop(defaultModelTop);
-        setEndOfModelList(false);
+        // setModelTop(defaultModelTop);
+        // setEndOfModelList(false);
         setFacets([]);
         setSelectModelNum(false);
         if (!filters) {
@@ -210,7 +218,7 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
-    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc,matchedModels,endOfModelList]);
+    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc,matchedModels]);
 
     const navigateToSearchPage = (searchTerm) => {
       if (!searchTerm || searchTerm === '') {
@@ -231,7 +239,7 @@ export const AppProvider = ({ children }) => {
       if (keywords && keywords.length > 0 && keywords !== "*") {
         if (resultCount === 0 || resultCount === TOTAL_RES_COUNT) {
           if (selectModelNum) {
-            searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList ? "" : "+"} models matched your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
+            searchDesc = searchDesc + `<h4>${matchedModels.length} models matched your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
           "<h6>Please select a model number from the filter panel for the best results.</h6>";
           }
           else {
@@ -249,7 +257,7 @@ export const AppProvider = ({ children }) => {
           }
           else {
             if (selectModelNum) {
-              searchDesc = searchDesc + `<h4>${matchedModels.length}${endOfModelList ? "" : "+"} models matched your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
+              searchDesc = searchDesc + `<h4>${matchedModels.length} models matched your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
             "<h6>Please select a model number from the filter panel for the best results.</h6>";
             }
             else {
@@ -270,46 +278,46 @@ export const AppProvider = ({ children }) => {
       return searchDesc;
     }
 
-      const seeMore = () => {
-        if (!endOfModelList) {
-          const body = {
-            partialModel: keywords,
-            model_top: modelTop + 10,
-            filters: filters,
-            // user: userEmail
-          }
-          axios.post(BASE_URL+`/fetch_more_models`, body)
-          .then(response => {
-              let allFacets = [];
-              if (response.data.matched_models && response.data.matched_models.length > 0) {
-                // console.log(response.data.matched_models)
-                  setMatchedModels(response.data.matched_models);
-                response.data.matched_models.map((model) => {
-                  // console.log(model)
-                  allFacets.push({
-                    "id": model["kModelMasterId"], 
-                    "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
-                    });
-                })
-              }
-              if (response.data.end_of_list) {
-                setEndOfModelList(response.data.end_of_list);
-              }
-              setFacets({...facets, "Model Number": allFacets});
-              setModelTop(modelTop + 10);
-          }).catch(error => {
-              console.error(error);
-            });
-        }
-    }
+    //   const seeMore = () => {
+    //     if (!endOfModelList) {
+    //       const body = {
+    //         partialModel: keywords,
+    //         // model_top: modelTop + 10,
+    //         filters: filters,
+    //         // user: userEmail
+    //       }
+    //       axios.post(BASE_URL+`/fetch_more_models`, body)
+    //       .then(response => {
+    //           let allFacets = [];
+    //           if (response.data.matched_models && response.data.matched_models.length > 0) {
+    //             // console.log(response.data.matched_models)
+    //               setMatchedModels(response.data.matched_models);
+    //             response.data.matched_models.map((model) => {
+    //               // console.log(model)
+    //               allFacets.push({
+    //                 "id": model["kModelMasterId"], 
+    //                 "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
+    //                 });
+    //             })
+    //           }
+    //           if (response.data.end_of_list) {
+    //             setEndOfModelList(response.data.end_of_list);
+    //           }
+    //           setFacets({...facets, "Model Number": allFacets});
+    //           // setModelTop(modelTop + 10);
+    //       }).catch(error => {
+    //           console.error(error);
+    //         });
+    //     }
+    // }
 
     return (
         <AppContext.Provider
             value={{navigate,BASE_URL,results,setResults,resultCount,setResultCount,currentPage,setCurrentPage,qParam,topParam,skipParam,
             q,setQ,skip,setSkip,top,filters,setFilters,facets,setFacets,isLoading,setIsLoading,preSelectedFilters,setPreSelectedFilters,
-            preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,modelTop,setModelTop,
-            endOfModelList,setEndOfModelList,userSearchDesc,setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,
-            modelNameDesc,setModelNameDesc,seeMore,navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,
+            preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,
+            userSearchDesc,setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,
+            modelNameDesc,setModelNameDesc,navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,
             sortedFilters,setSortedFilters,filterDesc,setFilterDesc}}>
             {children}
         </AppContext.Provider>
