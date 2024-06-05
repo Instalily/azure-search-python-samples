@@ -344,9 +344,7 @@ export const AppProvider = ({ children }) => {
                 }
               })
             }
-            console.log({...facets, [facetType]: allFacets})
             setFacets({...facets, [facetType]: allFacets});
-            console.log(setFacetTop)
             setFacetTop(facetTop+10);
             if (facetList.length < facetTop+10) {
               setEndOfFacetTypeList(true);
@@ -354,15 +352,41 @@ export const AppProvider = ({ children }) => {
       }
   }
   
+  const seeLess = (facetType, facetList, endOfFacetTypeList, setEndOfFacetTypeList, facetTop, setFacetTop) => {
+    if (endOfFacetTypeList) {
+          let allFacets = [];
+          if (facetList && facetList.length > 0) {
+            facetList
+            .slice(0, 10)
+            .map((facet) => {
+              if (facetType === "Model Number") {
+                allFacets.push({
+                "id": facet["kModelMasterId"], 
+                "value": `${facet["ModelNum"]} ${facet["BrandName"]} ${facet["EquipmentType"]} ${facet["MfgModelNum"] === "nan" ? "" : `(${facet["MfgModelNum"].replace(/[()]/g, "")})`}` 
+                });
+                
+              }
+              else {
+                allFacets.push(facet);
+              }
+            })
+          }
+          setFacets({...facets, [facetType]: allFacets});
+          setFacetTop(defaultFacetLen);
+          if (facetList.length > defaultFacetLen) {
+            setEndOfFacetTypeList(false);
+          }
+    }
+}
 
     return (
         <AppContext.Provider
             value={{navigate,BASE_URL,results,setResults,resultCount,setResultCount,currentPage,setCurrentPage,qParam,topParam,skipParam,
             q,setQ,skip,setSkip,top,filters,setFilters,facets,setFacets,isLoading,setIsLoading,preSelectedFilters,setPreSelectedFilters,
             preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,matchedBrands, setMatchedBrands, 
-            matchedEqTypes, setMatchedEqTypes,matchedPartTypes, setMatchedPartTypes, modelTop, setModelTop, brandTop, setBrandTop, endOfBrandList, setEndOfBrandList, 
+            matchedEqTypes, setMatchedEqTypes,matchedPartTypes, setMatchedPartTypes, defaultFacetLen, modelTop, setModelTop, brandTop, setBrandTop, endOfBrandList, setEndOfBrandList, 
             eqTypeTop, setEqTypeTop, endOfEqTypeList, setEndOfEqTypeList, partTypeTop, setPartTypeTop, endOfPartTypeList, setEndOfPartTypeList,endOfModelList, setEndOfModelList,userSearchDesc,
-            setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,modelNameDesc,setModelNameDesc,seeMore,
+            setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,modelNameDesc,setModelNameDesc,seeMore,seeLess,
             navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,sortedFilters,setSortedFilters,
             filterDesc,setFilterDesc}}>
             {children}
