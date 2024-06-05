@@ -7,7 +7,7 @@ import './CheckboxFacet.css';
 import { AppContext } from '../../../contexts/AppContext';
 
 export default function CheckboxFacet(props) {
-    const { postSearchHandler, seeMore, setModelNameDesc, matchedModels, endOfModelList, setEndOfModelList, modelTop, setModelTop,
+    const { postSearchHandler, seeMore, seeLess, defaultFacetLen, setModelNameDesc, matchedModels, endOfModelList, setEndOfModelList, modelTop, setModelTop,
         matchedBrands, endOfBrandList, setEndOfBrandList, brandTop, setBrandTop, matchedEqTypes, endOfEqTypeList, setEndOfEqTypeList, 
         eqTypeTop, setEqTypeTop, matchedPartTypes, endOfPartTypeList, setEndOfPartTypeList, partTypeTop, setPartTypeTop, setModelNumSearch } = useContext(AppContext);
 
@@ -41,7 +41,22 @@ export default function CheckboxFacet(props) {
           default:
             return null;
         }
-      };      
+      };   
+      
+      const renderSeeLessButton = (props) => {
+        switch (props.name) {
+          case "Model Number":
+            return endOfModelList && (matchedModels.length > defaultFacetLen) && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeLess(props.name, matchedModels, endOfModelList, setEndOfModelList, modelTop, setModelTop)}}>See Less...</div>;
+          case "Brand Name":
+            return endOfBrandList && (matchedBrands.length > defaultFacetLen) && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeLess(props.name, matchedBrands, endOfBrandList, setEndOfBrandList, brandTop, setBrandTop)}}>See Less...</div>;
+          case "Equipment Type":
+            return endOfEqTypeList && (matchedEqTypes.length > defaultFacetLen) && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeLess(props.name, matchedEqTypes, endOfEqTypeList, setEndOfEqTypeList, eqTypeTop, setEqTypeTop)}}>See Less...</div>;
+          case "Part Type":
+            return endOfPartTypeList && (matchedPartTypes.length > defaultFacetLen) && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeLess(props.name, matchedPartTypes, endOfPartTypeList, setEndOfPartTypeList, partTypeTop, setPartTypeTop)}}>See Less...</div>;
+          default:
+            return null;
+        }
+      };   
 
     const facetItems = props.values.map(facetValue => {
         const isSelected = props.selectedFacets.some(facet => facet.value === facetValue.value);
@@ -85,6 +100,7 @@ export default function CheckboxFacet(props) {
                 <List component="div" disablePadding>
                     {facetItems}
                     {renderSeeMoreButton(props)}
+                    {renderSeeLessButton(props)}
                 </List>
             </Collapse>
         </div>
