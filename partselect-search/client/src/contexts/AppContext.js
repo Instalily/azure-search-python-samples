@@ -29,15 +29,12 @@ export const AppProvider = ({ children }) => {
     const defaultFacetLen = 10;
     const [matchedBrands, setMatchedBrands] = useState(undefined);
     const [matchedEqTypes, setMatchedEqTypes] = useState(undefined);
-    const [matchedPartTypes, setMatchedPartTypes] = useState(undefined);
     const [matchedModels, setMatchedModels] = useState(undefined);
     const [brandTop, setBrandTop] = useState(defaultFacetLen);
     const [eqTypeTop, setEqTypeTop] = useState(defaultFacetLen);
-    const [partTypeTop, setPartTypeTop] = useState(defaultFacetLen);
     const [modelTop, setModelTop] = useState(defaultFacetLen);
     const [endOfBrandList, setEndOfBrandList] = useState(false);
     const [endOfEqTypeList, setEndOfEqTypeList] = useState(false);
-    const [endOfPartTypeList, setEndOfPartTypeList] = useState(false);
     const [endOfModelList, setEndOfModelList] = useState(false);
     const [userSearchDesc, setUserSearchDesc] = useState("");
     const [modelNumSearch, setModelNumSearch] = useState(modelsearchParam === "true")
@@ -60,7 +57,7 @@ export const AppProvider = ({ children }) => {
         BASE_URL = "http://0.0.0.0:8000"
         }
         else {
-        BASE_URL = "https://instaagentsearch-mwvqt7kpva-uc.a.run.app";
+          BASE_URL = process.env.REACT_APP_BASE_URL;
         }
 
     useEffect(() => {
@@ -116,18 +113,6 @@ export const AppProvider = ({ children }) => {
                       });
                       if (response.data.facets["Equipment Type"].length <= eqTypeTop) {
                         setEndOfEqTypeList(true);
-                      }
-                  } 
-                  if ("Part Type" in response.data.facets && response.data.facets["Brand Name"]) {
-                    setMatchedPartTypes(response.data.facets["Part Type"]);
-                    allFacets["Part Type"] = [];
-                    response.data.facets["Part Type"]
-                      .slice(0, partTypeTop)
-                      .map((eq) => {
-                        allFacets["Part Type"].push(eq);
-                      });
-                      if (response.data.facets["Part Type"].length <= partTypeTop) {
-                        setEndOfPartTypeList(true);
                       }
                   } 
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
@@ -234,11 +219,11 @@ export const AppProvider = ({ children }) => {
         setKeywords(q);
         setBrandTop(defaultFacetLen);
         setEqTypeTop(defaultFacetLen);
-        setPartTypeTop(defaultFacetLen);
+        // setPartTypeTop(defaultFacetLen);
         setModelTop(defaultFacetLen);
         setEndOfBrandList(false);
         setEndOfEqTypeList(false);
-        setEndOfPartTypeList(false);
+        // setEndOfPartTypeList(false);
         setEndOfModelList(false);
         setFacets([]);
         setSelectModelNum(false);
@@ -384,8 +369,8 @@ export const AppProvider = ({ children }) => {
             value={{navigate,BASE_URL,results,setResults,resultCount,setResultCount,currentPage,setCurrentPage,qParam,topParam,skipParam,
             q,setQ,skip,setSkip,top,filters,setFilters,facets,setFacets,isLoading,setIsLoading,preSelectedFilters,setPreSelectedFilters,
             preSelectedFlag,setPreSelectedFlag,keywords,setKeywords,resultsPerPage,matchedModels,setMatchedModels,matchedBrands, setMatchedBrands, 
-            matchedEqTypes, setMatchedEqTypes,matchedPartTypes, setMatchedPartTypes, defaultFacetLen, modelTop, setModelTop, brandTop, setBrandTop, endOfBrandList, setEndOfBrandList, 
-            eqTypeTop, setEqTypeTop, endOfEqTypeList, setEndOfEqTypeList, partTypeTop, setPartTypeTop, endOfPartTypeList, setEndOfPartTypeList,endOfModelList, setEndOfModelList,userSearchDesc,
+            matchedEqTypes, setMatchedEqTypes, defaultFacetLen, modelTop, setModelTop, brandTop, setBrandTop, endOfBrandList, setEndOfBrandList, 
+            eqTypeTop, setEqTypeTop, endOfEqTypeList, setEndOfEqTypeList,endOfModelList, setEndOfModelList,userSearchDesc,
             setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,modelNameDesc,setModelNameDesc,seeMore,seeLess,
             navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,sortedFilters,setSortedFilters,
             filterDesc,setFilterDesc}}>

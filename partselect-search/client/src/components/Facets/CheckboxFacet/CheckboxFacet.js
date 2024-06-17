@@ -36,8 +36,8 @@ export default function CheckboxFacet(props) {
             return !endOfBrandList && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeMore(props.name, matchedBrands, endOfBrandList, setEndOfBrandList, brandTop, setBrandTop)}}>See More...</div>;
           case "Equipment Type":
             return !endOfEqTypeList && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeMore(props.name, matchedEqTypes, endOfEqTypeList, setEndOfEqTypeList, eqTypeTop, setEqTypeTop)}}>See More...</div>;
-          case "Part Type":
-            return !endOfPartTypeList && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeMore(props.name, matchedPartTypes, endOfPartTypeList, setEndOfPartTypeList, partTypeTop, setPartTypeTop)}}>See More...</div>;
+          // case "Part Type":
+          //   return !endOfPartTypeList && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeMore(props.name, matchedPartTypes, endOfPartTypeList, setEndOfPartTypeList, partTypeTop, setPartTypeTop)}}>See More...</div>;
           default:
             return null;
         }
@@ -51,8 +51,8 @@ export default function CheckboxFacet(props) {
             return endOfBrandList && (matchedBrands.length > defaultFacetLen) && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeLess(props.name, matchedBrands, endOfBrandList, setEndOfBrandList, brandTop, setBrandTop)}}>See Less...</div>;
           case "Equipment Type":
             return endOfEqTypeList && (matchedEqTypes.length > defaultFacetLen) && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeLess(props.name, matchedEqTypes, endOfEqTypeList, setEndOfEqTypeList, eqTypeTop, setEqTypeTop)}}>See Less...</div>;
-          case "Part Type":
-            return endOfPartTypeList && (matchedPartTypes.length > defaultFacetLen) && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeLess(props.name, matchedPartTypes, endOfPartTypeList, setEndOfPartTypeList, partTypeTop, setPartTypeTop)}}>See Less...</div>;
+          // case "Part Type":
+            // return endOfPartTypeList && (matchedPartTypes.length > defaultFacetLen) && <div className="see-more" role="button" tabIndex="0" onClick={() => {seeLess(props.name, matchedPartTypes, endOfPartTypeList, setEndOfPartTypeList, partTypeTop, setPartTypeTop)}}>See Less...</div>;
           default:
             return null;
         }

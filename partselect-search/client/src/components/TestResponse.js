@@ -15,13 +15,13 @@ export const searchResponse = {
                 "count": 1
             }
         ],
-        "Part Type": [
-                {"value": "LADDER- CE", "count": 6},
-                {"value": "Handle Channel C-Clip", "count": 19},
-                {"value": "BLADE, FAN", "count": 6},
-                {"value": "SOLENOIDS AND WATER VALVE", "count": 4},
-                {"value": "RESERVOIR", "count": 17}            
-        ],
+        // "Part Type": [
+        //         {"value": "LADDER- CE", "count": 6},
+        //         {"value": "Handle Channel C-Clip", "count": 19},
+        //         {"value": "BLADE, FAN", "count": 6},
+        //         {"value": "SOLENOIDS AND WATER VALVE", "count": 4},
+        //         {"value": "RESERVOIR", "count": 17}            
+        // ],
        
         "Brand Name": [
             {

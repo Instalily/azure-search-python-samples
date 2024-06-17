@@ -33,7 +33,7 @@ export default function Facets() {
   const sortOrder = [
     "Brand Name",
     "Equipment Type",
-    "Part Type",
+    // "Part Type",
     "Model Number",
   ];
 
