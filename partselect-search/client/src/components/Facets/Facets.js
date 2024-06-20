@@ -42,6 +42,7 @@ export default function Facets() {
     Facets = Object.keys(facets)
       .filter(
         (key) =>
+        facets[key].length > 0 &&
           !(
             (exactModelMatch && key === "Equipment Type") ||
             (exactModelMatch && key === "Brand Name")
