@@ -4,6 +4,7 @@ import CircularProgress  from '@mui/material/CircularProgress';
 import Results from '../../components/Results/Results';
 import Pager from '../../components/Pager/Pager';
 import Facets from '../../components/Facets/Facets';
+import NoResults from '../../components/NoResults/NoResults';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import logo from '../../images/partselect.svg';
 import "../../components/SearchBar/SearchBar.css"
@@ -26,6 +27,7 @@ export default function Search() {
   } else {
     body = (
       <div className="col-md-9">
+        <NoResults />
         <Results/>
         <Pager className="pager-style"></Pager>
       </div>
