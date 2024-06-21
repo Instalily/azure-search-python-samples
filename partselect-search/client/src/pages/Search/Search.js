@@ -27,7 +27,6 @@ export default function Search() {
   } else {
     body = (
       <div className="col-md-9">
-        <NoResults />
         <Results/>
         <Pager className="pager-style"></Pager>
       </div>
