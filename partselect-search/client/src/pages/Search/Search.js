@@ -16,21 +16,26 @@ import Login from '../Login/Login';
 
 export default function Search() {
   
-  const {isLoading,postSearchHandler,setModelNumSearch,setModelNameDesc} = useContext(AppContext);
+  const {isLoading,postSearchHandler,setModelNumSearch,setModelNameDesc,noResults} = useContext(AppContext);
   // const {userEmail} = useContext(AuthContext);
   var body;
-  if (isLoading) {
-    body = (
-      <div className="col-md-9">
-        <CircularProgress />
-      </div>);
-  } else {
-    body = (
-      <div className="col-md-9">
-        <Results/>
-        <Pager className="pager-style"></Pager>
-      </div>
-    )
+  if (noResults) {
+    body = (<NoResults/>)
+  }
+  else {
+    if (isLoading) {
+      body = (
+        <div className="col-md-9">
+          <CircularProgress />
+        </div>);
+    } else {
+      body = (
+        <div className="col-md-9">
+          <Results/>
+          <Pager className="pager-style"></Pager>
+        </div>
+      )
+    }
   }
 
   return (

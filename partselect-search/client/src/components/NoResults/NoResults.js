@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import './NoResults.css';
+import { AppContext } from '../../contexts/AppContext';
 
 import a1 from '../../images/appliance/a1.svg';
 import a2 from '../../images/appliance/a2.svg';
@@ -15,14 +16,15 @@ import a11 from '../../images/appliance/a11.svg';
 import a12 from '../../images/appliance/a12.svg';
 
 export default function NoResults() {
+const {q} = useContext(AppContext);
   return (
     <div className="no-results">
         <div className="header">
-            <h2>We Couldn't Find A Match For 'userquery'</h2>
+            <h2>We Couldn't Find A Match For '{q}'</h2>
         </div>
         <div className="content">
             <div className="left">
-                <b>Sorry, we were unable to find a match for your search 'userquery','</b> but we probably have the repair part you're looking for.
+                <b>Sorry, we were unable to find a match for your search '{q}',</b> but we probably have the repair part you're looking for.
                 <p />
                 The best way to find what you're looking for is to <b>make sure your model or part number is accurate and complete.</b>
                 <p />

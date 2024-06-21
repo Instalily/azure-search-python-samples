@@ -6,7 +6,7 @@ import "./Facets.css";
 import { AppContext } from "../../contexts/AppContext";
 
 export default function Facets() {
-  const { facets, filters, setFilters, exactModelMatch } =
+  const { facets, filters, setFilters, exactModelMatch, noResults } =
     useContext(AppContext);
   function mapFacetName(facetName) {
     const capitalizeFirstLetter = (string) =>
@@ -100,9 +100,9 @@ export default function Facets() {
   return (
     <div id="facetPanel" className="box">
       <div className="facetbox">
-        <div className="clear-filters" onClick={clearFilters}>
+        {!noResults && <div className="clear-filters" onClick={clearFilters}>
           <u>Clear filters</u>
-        </div>
+        </div>}
         <div id="clearFilters">
           <ul className="filterlist">{Filters}</ul>
         </div>

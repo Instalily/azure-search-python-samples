@@ -43,6 +43,7 @@ export const AppProvider = ({ children }) => {
     const [selectModelNum, setSelectModelNum] = useState(undefined);
     const [sortedFilters, setSortedFilters] = useState([]);
     const [filterDesc, setFilterDesc] = useState("");
+    const [noResults, setNoResults] = useState(false);
     const TOTAL_RES_COUNT = 4412838;
     const sortOrder = {
         'Brand Name': 1,
@@ -143,6 +144,9 @@ export const AppProvider = ({ children }) => {
                   console.log("Facets: ", allFacets)
                   setFacets(allFacets);
                   setResultCount(response.data.count);
+                  if (response.data.count === 0) {
+                    setNoResults(true);
+                  }
                   if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
                       setPreSelectedFilters(response.data.preselectedFilters);
                       setPreSelectedFlag(true);
@@ -219,13 +223,12 @@ export const AppProvider = ({ children }) => {
         setKeywords(q);
         setBrandTop(defaultFacetLen);
         setEqTypeTop(defaultFacetLen);
-        // setPartTypeTop(defaultFacetLen);
         setModelTop(defaultFacetLen);
         setEndOfBrandList(false);
         setEndOfEqTypeList(false);
-        // setEndOfPartTypeList(false);
         setEndOfModelList(false);
         setFacets([]);
+        setNoResults(false);
         setSelectModelNum(false);
         if (!filters) {
           setFilters([]);
@@ -373,7 +376,7 @@ export const AppProvider = ({ children }) => {
             eqTypeTop, setEqTypeTop, endOfEqTypeList, setEndOfEqTypeList,endOfModelList, setEndOfModelList,userSearchDesc,
             setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,modelNameDesc,setModelNameDesc,seeMore,seeLess,
             navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,sortedFilters,setSortedFilters,
-            filterDesc,setFilterDesc}}>
+            filterDesc,setFilterDesc,noResults}}>
             {children}
         </AppContext.Provider>
     );
