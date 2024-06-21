@@ -19,26 +19,26 @@ export default function Search() {
   const {isLoading,postSearchHandler,setModelNumSearch,setModelNameDesc,noResults} = useContext(AppContext);
   // const {userEmail} = useContext(AuthContext);
   var body;
-  if (noResults) {
-    body = (<div className="col-md-9">
-            <NoResults/>
-          </div>)
-  }
-  else {
     if (isLoading) {
       body = (
         <div className="col-md-9">
           <CircularProgress />
         </div>);
     } else {
-      body = (
-        <div className="col-md-9">
-          <Results/>
-          <Pager className="pager-style"></Pager>
-        </div>
-      )
+      if (noResults) {
+        body = (<div className="col-md-9">
+                <NoResults/>
+              </div>)
+      }
+      else {
+        body = (
+          <div className="col-md-9">
+            <Results/>
+            <Pager className="pager-style"></Pager>
+          </div>
+        )
+      }
     }
-  }
 
   return (
   //  userEmail ? (

@@ -147,6 +147,9 @@ export const AppProvider = ({ children }) => {
                   if (response.data.count === 0) {
                     setNoResults(true);
                   }
+                  else {
+                    setNoResults(false);
+                  }
                   if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
                       setPreSelectedFilters(response.data.preselectedFilters);
                       setPreSelectedFlag(true);
@@ -194,6 +197,7 @@ export const AppProvider = ({ children }) => {
       }, [sortedFilters]);
 
     useEffect(() => {
+      
       if (preSelectedFlag)
       {
         if (filters === preSelectedFilters) {
