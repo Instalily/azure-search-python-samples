@@ -20,7 +20,9 @@ export default function Search() {
   // const {userEmail} = useContext(AuthContext);
   var body;
   if (noResults) {
-    body = (<NoResults/>)
+    body = (<div className="col-md-9">
+            <NoResults/>
+          </div>)
   }
   else {
     if (isLoading) {

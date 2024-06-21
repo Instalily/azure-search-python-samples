@@ -100,9 +100,9 @@ export default function Facets() {
   return (
     <div id="facetPanel" className="box">
       <div className="facetbox">
-        {!noResults && <div className="clear-filters" onClick={clearFilters}>
+        <div className="clear-filters" onClick={clearFilters}>
           <u>Clear filters</u>
-        </div>}
+        </div>
         <div id="clearFilters">
           <ul className="filterlist">{Filters}</ul>
         </div>
