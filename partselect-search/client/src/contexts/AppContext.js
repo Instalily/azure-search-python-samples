@@ -36,13 +36,16 @@ export const AppProvider = ({ children }) => {
     const [endOfBrandList, setEndOfBrandList] = useState(false);
     const [endOfEqTypeList, setEndOfEqTypeList] = useState(false);
     const [endOfModelList, setEndOfModelList] = useState(false);
-    const [userSearchDesc, setUserSearchDesc] = useState("");
+    const [userSearchDesc, setUserSearchDesc] = useState(null);
     const [modelNumSearch, setModelNumSearch] = useState(modelsearchParam === "true")
     const modelnameParam =  new URLSearchParams(location.search).get('modelname') ?? "";
     const [modelNameDesc, setModelNameDesc] = useState(modelnameParam);
     const [selectModelNum, setSelectModelNum] = useState(undefined);
     const [sortedFilters, setSortedFilters] = useState([]);
     const [filterDesc, setFilterDesc] = useState("");
+    const [preSelectedFilterDesc, setPreSelectedFilterDesc] = useState("");
+    const [rawQuery, setRawQuery] = useState("");
+    const [tokenize, setTokenize] = useState(true);
     const TOTAL_RES_COUNT = 4412838;
     const sortOrder = {
         'Brand Name': 1,
@@ -81,6 +84,7 @@ export const AppProvider = ({ children }) => {
             filters: filters ?? [],
             // model_top: modelTop,
             modelnum_search: modelNumSearch,
+            tokenize: tokenize
             // user: userEmail
             };
             axios.post(BASE_URL+'/search', body)
@@ -143,9 +147,13 @@ export const AppProvider = ({ children }) => {
                   console.log("Facets: ", allFacets)
                   setFacets(allFacets);
                   setResultCount(response.data.count);
+                  if (response.data.raw_query) {
+                    setRawQuery(response.data.raw_query);
+                  }
                   if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
                       setPreSelectedFilters(response.data.preselectedFilters);
                       setPreSelectedFlag(true);
+                      setPreSelectedFilterDesc(describePreSelectedFilters(response.data.preselectedFilters));
                   }
                   if (response.data.keywords.toLowerCase() !== q.toLowerCase()) {
                       setKeywords(response.data.keywords);
@@ -217,16 +225,16 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
       if (q) {
         setKeywords(q);
+        setRawQuery("");
         setBrandTop(defaultFacetLen);
         setEqTypeTop(defaultFacetLen);
-        // setPartTypeTop(defaultFacetLen);
         setModelTop(defaultFacetLen);
         setEndOfBrandList(false);
         setEndOfEqTypeList(false);
-        // setEndOfPartTypeList(false);
         setEndOfModelList(false);
         setFacets([]);
         setSelectModelNum(false);
+        setTokenize(true);
         if (!filters) {
           setFilters([]);
         }
@@ -249,7 +257,7 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
-    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc,matchedModels]);
+    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc,matchedModels,preSelectedFlag,preSelectedFilterDesc,rawQuery]);
 
     const navigateToSearchPage = (searchTerm) => {
       if (!searchTerm || searchTerm === '') {
@@ -264,50 +272,125 @@ export const AppProvider = ({ children }) => {
         }
         setQ(searchTerm);
       }
+    function describePreSelectedFilters(list) {
+      let brand = '';
+      let equipment = '';
+      list.forEach(item => {
+        if (item.field === 'Brand Name') {
+          brand = item.value;
+        } else if (item.field === 'Equipment Type') {
+          equipment = item.value;
+        }
+      });
+      const parts = [];
+      if (brand) {
+        parts.push(`"${brand}" brand`);
+      }
+      if (equipment) {
+        parts.push(`"${equipment}" equipment`);
+      }
+      return parts.join(' and ');
+    }
 
+    const undoTokenize = () => {
+      setKeywords(rawQuery);
+      setTokenize(false);
+      setFilters([]);
+    }
+    
     function createUserSearchDescription() {
-      let searchDesc = '';
       if (keywords && keywords.length > 0 && keywords !== "*") {
         if (resultCount === 0 || resultCount === TOTAL_RES_COUNT) {
           if (selectModelNum) {
-            searchDesc = searchDesc + `<h4>${matchedModels.length} models matched your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
-          "<h6>Please select a model number from the filter panel for the best results.</h6>";
-          }
-          else {
+            return (
+              <>
+                <h4>{matchedModels.length} models matched your search: <u>{keywords.trim().replaceAll("*", '')}</u></h4>
+                <hr/>
+                <h6>Please select a model number from the filter panel for the best results.</h6>
+              </>
+            );
+          } else {
             if(!modelNumSearch) {
-              searchDesc = searchDesc + `<h4>No results found for your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>`;
-            }
-            else {
-              searchDesc = searchDesc + `<h4>No parts found for model: <u>${modelNameDesc}</u></h4><hr/>`;
+              return (
+                <>
+                  <h4>No results found for your search: <u>{keywords.trim().replaceAll("*", '')}</u></h4>
+                  <hr/>
+                </>
+              );
+            } else {
+              return (
+                <>
+                  <h4>No parts found for model: <u>{modelNameDesc}</u></h4>
+                  <hr/>
+                </>
+              );
             }
           }
-        }
-        else {
-          if (modelNumSearch && modelNameDesc!=="") {
-            searchDesc = searchDesc + `<h3>${modelNameDesc} Parts</h3><hr>`;
-          }
-          else {
+        } else {
+          if (modelNumSearch && modelNameDesc !== "") {
+            return (
+              <>
+                <h3>{modelNameDesc} Parts</h3>
+                <hr/>
+              </>
+            );
+          } else {
             if (selectModelNum) {
-              searchDesc = searchDesc + `<h4>${matchedModels.length} models matched your search: <u>${keywords.trim().replaceAll("*", '')}</u></h4><hr/>` +
-            "<h6>Please select a model number from the filter panel for the best results.</h6>";
-            }
-            else {
-              searchDesc = searchDesc + `<h4>You searched for: <strong><u>${keywords.trim().replaceAll("*", '')}</u></strong></h4>`;
+              return (
+                <>
+                  <h4>{matchedModels.length} models matched your search: <u>{keywords.trim().replaceAll("*", '')}</u></h4>
+                  <hr/>
+                  <h6>Please select a model number from the filter panel for the best results.</h6>
+                </>
+              );
+            } else {
+              if (preSelectedFlag) {
+                return (
+                  <>
+                    <h4>You searched for <strong>"{keywords.trim().replaceAll("*", '').toLowerCase()}"</strong> parts for {preSelectedFilterDesc}</h4>
+                    <hr/>
+                    <h6><span onClick={undoTokenize} style={{cursor: 'pointer', textDecoration: 'underline'}} onMouseOver={(e) => e.currentTarget.style.textDecoration = 'none'} onMouseOut={(e) => e.currentTarget.style.textDecoration = 'underline'}>
+                      Did you mean part <strong>"{rawQuery}"</strong>?
+                    </span></h6>
+                  </>
+                );
+              } else {
+                return (
+                  <>
+                    <h4>You searched for: <strong><u>{keywords.trim().replaceAll("*", '')}</u></strong></h4>
+                  </>
+                );
+              }
             }
           }
         }
+      } else if (keywords === "*") {
+        return (
+          <>
+            <h2>{(!filterDesc || filterDesc.length === 0) ? "Showing All Results" : `All ${filterDesc} Parts`}</h2>
+            <hr/>
+          </>
+        );
+      } else if (filterDesc && filterDesc.length > 0) {
+        if (preSelectedFlag) {
+          return (
+            <>
+              <h2>{filterDesc} Parts</h2>
+              <hr/>
+              <h6><span onClick={undoTokenize} style={{cursor: 'pointer', textDecoration: 'underline'}} onMouseOver={(e) => e.currentTarget.style.textDecoration = 'none'} onMouseOut={(e) => e.currentTarget.style.textDecoration = 'underline'}>
+                Did you mean part <strong>"{rawQuery}"</strong>?
+              </span></h6>
+            </>
+          );
+        } else {
+          return (
+            <>
+              <h2>{filterDesc} Parts</h2>
+            </>
+          );
+        }
       }
-      else if (keywords === "*") {
-        searchDesc = searchDesc + (!filterDesc || filterDesc.length === 0) ? 
-          "<h2>Showing All Results</h2><hr/>" : 
-          `<h2>All ${filterDesc} Parts</h2><hr/>`;
-      }
-      else if (filterDesc &&  filterDesc.length > 0) {
-        searchDesc = searchDesc + `<h2>${filterDesc} Parts</h2><hr/>`;
-      }
-
-      return searchDesc;
-    }
+    }    
 
 
     const seeMore = (facetType, facetList, endOfFacetTypeList, setEndOfFacetTypeList, facetTop, setFacetTop) => {
