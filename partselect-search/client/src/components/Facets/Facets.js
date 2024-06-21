@@ -6,7 +6,7 @@ import "./Facets.css";
 import { AppContext } from "../../contexts/AppContext";
 
 export default function Facets() {
-  const { facets, filters, setFilters, exactModelMatch } =
+  const { facets, filters, setFilters, exactModelMatch, noResults } =
     useContext(AppContext);
   function mapFacetName(facetName) {
     const capitalizeFirstLetter = (string) =>
