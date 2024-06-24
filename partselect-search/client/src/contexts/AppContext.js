@@ -119,8 +119,10 @@ export const AppProvider = ({ children }) => {
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
                       setMatchedModels(response.data.matched_models);
                       setSelectModelNum(true);
-                      if (response.data.matched_models.length === 1 && response.data.matched_models[0]["ModelNum"].toLowerCase() === keywords && keywords.toLowerCase()) {
+                      if (response.data.matched_models.length === 1 && (keywords && response.data.matched_models[0]["ModelNum"].toLowerCase().includes(keywords.toLowerCase()))) {
+                        let model = response.data.matched_models[0];
                           setExactModelMatch(true);
+                          setModelNameDesc(`${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}`);
                       }
                       else {
                         setExactModelMatch(false);
@@ -154,7 +156,7 @@ export const AppProvider = ({ children }) => {
                       setPreSelectedFilters(response.data.preselectedFilters);
                       setPreSelectedFlag(true);
                   }
-                  if (response.data.keywords.toLowerCase() !== q.toLowerCase()) {
+                  if (response.data.keywords && response.data.keywords.toLowerCase() !== q.toLowerCase()) {
                       setKeywords(response.data.keywords);
                   }
                   setIsLoading(false);
@@ -253,7 +255,7 @@ export const AppProvider = ({ children }) => {
         }
         navigate(endpoint);
       }
-    }, [q, modelNumSearch, modelNameDesc]);
+    }, [q, modelNumSearch]);
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
@@ -291,7 +293,7 @@ export const AppProvider = ({ children }) => {
           }
         }
         else {
-          if (modelNumSearch && modelNameDesc!=="") {
+          if (modelNameDesc!=="") {
             searchDesc = searchDesc + `<h3>${modelNameDesc} Parts</h3><hr>`;
           }
           else {
