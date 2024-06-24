@@ -224,6 +224,7 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
       if (q) {
+        setCurrentPage(1);
         setKeywords(q);
         setBrandTop(defaultFacetLen);
         setEqTypeTop(defaultFacetLen);

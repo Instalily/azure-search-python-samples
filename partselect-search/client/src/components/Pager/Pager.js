@@ -4,21 +4,29 @@ import './Pager.css';
 import { AppContext } from '../../contexts/AppContext';
 
 export default function Pager() {
-    const {currentPage,resultCount, resultsPerPage,setCurrentPage} = useContext(AppContext)
-    let [selectedPage, setSelectedPage] = useState(currentPage);
-    let totalPages = Math.ceil(resultCount / resultsPerPage);
+    const { currentPage, resultCount, resultsPerPage, setCurrentPage } = useContext(AppContext);
+    const [selectedPage, setSelectedPage] = useState(currentPage);
+    const totalPages = Math.ceil(resultCount / resultsPerPage);
 
-    useEffect(_=>{
+    useEffect(() => {
+        setSelectedPage(currentPage);
+    }, [currentPage]);
+
+    useEffect(() => {
         setCurrentPage(selectedPage);
-    }, [selectedPage, currentPage,resultCount, resultsPerPage,setCurrentPage]);
+    }, [selectedPage, setCurrentPage]);
 
     function goToNextPage() {
+        if (selectedPage < totalPages) {
         setSelectedPage(selectedPage + 1);
+        }
     }
 
-    function goToPreviousPage() {
-        setSelectedPage(selectedPage - 1);
+  function goToPreviousPage() {
+    if (selectedPage > 1) {
+      setSelectedPage(selectedPage - 1);
     }
+  }
 
     var i = 0;
     var page_links = [];
