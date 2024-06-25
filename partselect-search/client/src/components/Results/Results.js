@@ -19,7 +19,7 @@ export default function Results() {
     <div>
       <div>
       <div>
-        <p className="results-info" dangerouslySetInnerHTML={{__html: userSearchDesc}}></p>
+        <p className="results-info">{userSearchDesc}</p>
       </div> 
         <p className="results-info">Showing {beginDocNumber}-{endDocNumber} of {resultCount.toLocaleString()} results</p>
         <div className="row row-cols-md-4 results">
