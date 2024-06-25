@@ -46,6 +46,7 @@ export const AppProvider = ({ children }) => {
     const [preSelectedFilterDesc, setPreSelectedFilterDesc] = useState("");
     const [rawQuery, setRawQuery] = useState("");
     const [tokenize, setTokenize] = useState(true);
+    const [noResults, setNoResults] = useState(false);
     const TOTAL_RES_COUNT = 4412838;
     const sortOrder = {
         'Brand Name': 1,
@@ -122,8 +123,10 @@ export const AppProvider = ({ children }) => {
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
                       setMatchedModels(response.data.matched_models);
                       setSelectModelNum(true);
-                      if (response.data.matched_models.length === 1 && response.data.matched_models[0]["ModelNum"].toLowerCase() === keywords && keywords.toLowerCase()) {
+                      if (response.data.matched_models.length === 1 && (keywords && response.data.matched_models[0]["ModelNum"].toLowerCase().includes(keywords.toLowerCase()))) {
+                        let model = response.data.matched_models[0];
                           setExactModelMatch(true);
+                          setModelNameDesc(`${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}`);
                       }
                       else {
                         setExactModelMatch(false);
@@ -149,13 +152,18 @@ export const AppProvider = ({ children }) => {
                   setResultCount(response.data.count);
                   if (response.data.raw_query) {
                     setRawQuery(response.data.raw_query);
+                  if (response.data.count === 0) {
+                    setNoResults(true);
+                  }
+                  else {
+                    setNoResults(false);
                   }
                   if (response.data.preselectedFilters && response.data.preselectedFilters.length > 0) {
                       setPreSelectedFilters(response.data.preselectedFilters);
                       setPreSelectedFlag(true);
                       setPreSelectedFilterDesc(describePreSelectedFilters(response.data.preselectedFilters));
                   }
-                  if (response.data.keywords.toLowerCase() !== q.toLowerCase()) {
+                  if (response.data.keywords && response.data.keywords.toLowerCase() !== q.toLowerCase()) {
                       setKeywords(response.data.keywords);
                   }
                   setIsLoading(false);
@@ -198,6 +206,7 @@ export const AppProvider = ({ children }) => {
       }, [sortedFilters]);
 
     useEffect(() => {
+      
       if (preSelectedFlag)
       {
         if (filters === preSelectedFilters) {
@@ -224,6 +233,7 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
       if (q) {
+        setCurrentPage(1);
         setKeywords(q);
         setRawQuery("");
         setBrandTop(defaultFacetLen);
@@ -233,6 +243,7 @@ export const AppProvider = ({ children }) => {
         setEndOfEqTypeList(false);
         setEndOfModelList(false);
         setFacets([]);
+        setNoResults(false);
         setSelectModelNum(false);
         setTokenize(true);
         if (!filters) {
@@ -253,7 +264,7 @@ export const AppProvider = ({ children }) => {
         }
         navigate(endpoint);
       }
-    }, [q, modelNumSearch, modelNameDesc]);
+    }, [q, modelNumSearch]);
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
@@ -327,7 +338,7 @@ export const AppProvider = ({ children }) => {
             }
           }
         } else {
-          if (modelNumSearch && modelNameDesc !== "") {
+          if (modelNameDesc !== "") {
             return (
               <>
                 <h3>{modelNameDesc} Parts</h3>
@@ -456,7 +467,7 @@ export const AppProvider = ({ children }) => {
             eqTypeTop, setEqTypeTop, endOfEqTypeList, setEndOfEqTypeList,endOfModelList, setEndOfModelList,userSearchDesc,
             setUserSearchDesc,exactModelMatch,setExactModelMatch,initialRef,postSearchHandler,modelNameDesc,setModelNameDesc,seeMore,seeLess,
             navigateToSearchPage,selectModelNum,setSelectModelNum,modelNumSearch,setModelNumSearch,sortedFilters,setSortedFilters,
-            filterDesc,setFilterDesc}}>
+            filterDesc,setFilterDesc,noResults}}>
             {children}
         </AppContext.Provider>
     );
