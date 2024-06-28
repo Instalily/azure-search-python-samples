@@ -7,7 +7,6 @@ import { AuthContext } from "./AuthContext";
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-    const {userEmail, setUserEmail} = useContext(AuthContext);
     let location = useLocation();
     const [results, setResults] = useState([]);
     const [resultCount, setResultCount] = useState(0);
@@ -83,10 +82,8 @@ export const AppProvider = ({ children }) => {
             top: top,
             skip: skip,
             filters: filters ?? [],
-            // model_top: modelTop,
             modelnum_search: modelNumSearch,
             tokenize: tokenize
-            // user: userEmail
             };
             axios.post(BASE_URL+'/search', body)
                 .then(response => {
@@ -152,6 +149,7 @@ export const AppProvider = ({ children }) => {
                   setResultCount(response.data.count);
                   if (response.data.raw_query) {
                     setRawQuery(response.data.raw_query);
+                  }
                   if (response.data.count === 0) {
                     setNoResults(true);
                   }
@@ -401,8 +399,7 @@ export const AppProvider = ({ children }) => {
           );
         }
       }
-    }    
-
+    }     
 
     const seeMore = (facetType, facetList, endOfFacetTypeList, setEndOfFacetTypeList, facetTop, setFacetTop) => {
       if (!endOfFacetTypeList) {
