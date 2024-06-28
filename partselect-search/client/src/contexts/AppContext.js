@@ -43,7 +43,7 @@ export const AppProvider = ({ children }) => {
     const [sortedFilters, setSortedFilters] = useState([]);
     const [filterDesc, setFilterDesc] = useState("");
     const [preSelectedFilterDesc, setPreSelectedFilterDesc] = useState("");
-    const [rawQuery, setRawQuery] = useState("");
+    const [rawQuery, setRawQuery] = useState(null);
     const [tokenize, setTokenize] = useState(true);
     const [noResults, setNoResults] = useState(false);
     const TOTAL_RES_COUNT = 4412838;
@@ -233,7 +233,7 @@ export const AppProvider = ({ children }) => {
       if (q) {
         setCurrentPage(1);
         setKeywords(q);
-        setRawQuery("");
+        setRawQuery(null);
         setBrandTop(defaultFacetLen);
         setEqTypeTop(defaultFacetLen);
         setModelTop(defaultFacetLen);
@@ -353,7 +353,7 @@ export const AppProvider = ({ children }) => {
                 </>
               );
             } else {
-              if (preSelectedFlag) {
+              if (preSelectedFlag && rawQuery) {
                 return (
                   <>
                     <h4>You searched for <strong>"{keywords.trim().replaceAll("*", '').toLowerCase()}"</strong> parts for {preSelectedFilterDesc}</h4>
