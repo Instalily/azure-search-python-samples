@@ -4,6 +4,7 @@ import CircularProgress  from '@mui/material/CircularProgress';
 import Results from '../../components/Results/Results';
 import Pager from '../../components/Pager/Pager';
 import Facets from '../../components/Facets/Facets';
+import NoResults from '../../components/NoResults/NoResults';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import logo from '../../images/partselect.svg';
 import "../../components/SearchBar/SearchBar.css"
@@ -15,22 +16,29 @@ import Login from '../Login/Login';
 
 export default function Search() {
   
-  const {isLoading,postSearchHandler,setModelNumSearch,setModelNameDesc} = useContext(AppContext);
+  const {isLoading,postSearchHandler,setModelNumSearch,setModelNameDesc,noResults} = useContext(AppContext);
   // const {userEmail} = useContext(AuthContext);
   var body;
-  if (isLoading) {
-    body = (
-      <div className="col-md-9">
-        <CircularProgress />
-      </div>);
-  } else {
-    body = (
-      <div className="col-md-9">
-        <Results/>
-        <Pager className="pager-style"></Pager>
-      </div>
-    )
-  }
+    if (isLoading) {
+      body = (
+        <div className="col-md-9">
+          <CircularProgress />
+        </div>);
+    } else {
+      if (noResults) {
+        body = (<div className="col-md-9">
+                <NoResults/>
+              </div>)
+      }
+      else {
+        body = (
+          <div className="col-md-9">
+            <Results/>
+            <Pager className="pager-style"></Pager>
+          </div>
+        )
+      }
+    }
 
   return (
   //  userEmail ? (

@@ -6,7 +6,7 @@ import "./Facets.css";
 import { AppContext } from "../../contexts/AppContext";
 
 export default function Facets() {
-  const { facets, filters, setFilters, exactModelMatch } =
+  const { facets, filters, setFilters, exactModelMatch, noResults } =
     useContext(AppContext);
   function mapFacetName(facetName) {
     const capitalizeFirstLetter = (string) =>
@@ -38,16 +38,15 @@ export default function Facets() {
   ];
 
   try {
-    console.log(exactModelMatch);
     Facets = Object.keys(facets)
       .filter(
         (key) =>
         facets[key].length > 0 &&
-          !(
-            (exactModelMatch && key === "Equipment Type") ||
-            (exactModelMatch && key === "Brand Name")
-          )
-      )
+      (
+        exactModelMatch
+          ? (key === "Equipment Type" || key === "Brand Name")
+          : true
+      ))
       .sort((a, b) => {
         const indexA = sortOrder.indexOf(a);
         const indexB = sortOrder.indexOf(b);
