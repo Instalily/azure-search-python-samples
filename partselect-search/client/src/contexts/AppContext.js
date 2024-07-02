@@ -380,7 +380,7 @@ export const AppProvider = ({ children }) => {
               if (matchedModels.length === 1 && (exactModelMatch || modelNumSearch) && modelNameDesc) {
                 return (
                   <>
-                    <h4>{resultCount} {resultCount === 1? "part result" : "part results"} for <strong>{modelNameDesc}</strong></h4>
+                    <h4>{resultCount} {resultCount === 1? "part result" : "part results"} {preSelectedFilterDesc!=="" ? "for" : ""} {preSelectedFilterDesc} for <strong>{modelNameDesc}</strong></h4>
                     <hr/>
                   </>
                 );
