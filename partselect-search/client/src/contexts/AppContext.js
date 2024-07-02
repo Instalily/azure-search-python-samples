@@ -11,7 +11,7 @@ export const AppProvider = ({ children }) => {
     const [results, setResults] = useState([]);
     const [resultCount, setResultCount] = useState(0);
     const qParam = new URLSearchParams(location.search).get('q');
-    const topParam = parseInt(new URLSearchParams(location.search).get('top') ?? 8, 10);
+    const topParam = parseInt(new URLSearchParams(location.search).get('top') ?? 9, 10);
     const skipParam = parseInt(new URLSearchParams(location.search).get('skip') ?? 0, 10);
     const [currentPage, setCurrentPage] = useState(1);
     const [q, setQ] = useState(qParam);
@@ -46,6 +46,7 @@ export const AppProvider = ({ children }) => {
     const [rawQuery, setRawQuery] = useState(null);
     const [tokenize, setTokenize] = useState(true);
     const [noResults, setNoResults] = useState(false);
+    const [responseType, setResponseType] = useState("");
     const TOTAL_RES_COUNT = 4412838;
     const sortOrder = {
         'Brand Name': 1,
@@ -120,25 +121,18 @@ export const AppProvider = ({ children }) => {
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
                       setMatchedModels(response.data.matched_models);
                       setSelectModelNum(true);
-                      if (response.data.matched_models.length === 1 && (keywords && response.data.matched_models[0]["ModelNum"].toLowerCase().includes(keywords.toLowerCase()))) {
-                        let model = response.data.matched_models[0];
-                          setExactModelMatch(true);
-                          setModelNameDesc(`${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}`);
-                      }
-                      else {
-                        setExactModelMatch(false);
-                      }
-                      if (!exactModelMatch) {
-                      allFacets["Model Number"] = [];
-                      response.data.matched_models
-                          .slice(0, modelTop)
-                          .map((model) => {
-                          allFacets["Model Number"].push(
-                              {
-                                  "id": model["kModelMasterId"], 
-                                  "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
-                                })
-                      });
+                      console.log(response.data.response_type)
+                      if (!(response.data.matched_models.length === 1 && response.data.response_type === "PARTS_FOR_MATCHING_MODELS")) {
+                        allFacets["Model Number"] = [];
+                        response.data.matched_models
+                            .slice(0, modelTop)
+                            .map((model) => {
+                            allFacets["Model Number"].push(
+                                {
+                                    "id": model["kModelMasterId"], 
+                                    "value": `${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}` 
+                                  })
+                        });
                       }
                   }
                   if (response.data.matched_models && response.data.matched_models.length <=modelTop) {
@@ -161,8 +155,11 @@ export const AppProvider = ({ children }) => {
                       setPreSelectedFlag(true);
                       setPreSelectedFilterDesc(describePreSelectedFilters(response.data.preselectedFilters));
                   }
-                  if (response.data.keywords && response.data.keywords.toLowerCase() !== q.toLowerCase()) {
+                  if (response.data.keywords.toLowerCase() !== q.toLowerCase()) {
                       setKeywords(response.data.keywords);
+                  }
+                  if (response.data.response_type) {
+                    setResponseType(response.data.response_type);
                   }
                   setIsLoading(false);
                 }
@@ -181,7 +178,7 @@ export const AppProvider = ({ children }) => {
       setPreSelectedFlag(false);
     }
   }, [skip]);
-        
+  
     useEffect(() => {
     if (preSelectedFilters && preSelectedFilters.length > 0) {
         setFilters(preSelectedFilters);
@@ -217,7 +214,6 @@ export const AppProvider = ({ children }) => {
           setPreSelectedFilters([]);
           if (!keywords || keywords.length === 0) {
             setFilterDesc("");
-            // setKeywords("*");
           }
         }
       }
@@ -228,6 +224,20 @@ export const AppProvider = ({ children }) => {
         setExactModelMatch(true);
       }
     }, [modelNumSearch]);
+
+    useEffect(() => {
+      if (matchedModels && matchedModels.length === 1 
+          && (keywords && matchedModels[0]["ModelNum"].toLowerCase().includes(keywords.toLowerCase()))
+          && responseType === "PARTS_FOR_MATCHING_MODELS"
+          ) {
+        let model = matchedModels[0];
+          setExactModelMatch(true);
+          setModelNameDesc(`${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}`);
+      }
+      else {
+        setExactModelMatch(false);
+      }
+    }, [matchedModels, responseType]);
 
     useEffect(() => {
       if (q) {
@@ -244,6 +254,7 @@ export const AppProvider = ({ children }) => {
         setNoResults(false);
         setSelectModelNum(false);
         setTokenize(true);
+        setResponseType("");
         if (!filters) {
           setFilters([]);
         }
@@ -266,7 +277,7 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
         setUserSearchDesc(createUserSearchDescription());
-    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc,matchedModels,preSelectedFlag,preSelectedFilterDesc,rawQuery]);
+    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc,matchedModels,preSelectedFlag,preSelectedFilterDesc,rawQuery,responseType]);
 
     const navigateToSearchPage = (searchTerm) => {
       if (!searchTerm || searchTerm === '') {
@@ -354,9 +365,10 @@ export const AppProvider = ({ children }) => {
               );
             } else {
               if (preSelectedFlag && rawQuery) {
+                console.log("Keywords: ", keywords)
                 return (
                   <>
-                    <h4>You searched for <strong>"{keywords.trim().replaceAll("*", '').toLowerCase()}"</strong> parts for {preSelectedFilterDesc}</h4>
+                    <h4>You searched for {keywords && keywords!=="" && <strong>"{keywords.trim().replaceAll("*", '').toLowerCase()}"</strong>} parts for {preSelectedFilterDesc}</h4>
                     <hr/>
                     <h6><span onClick={undoTokenize} style={{cursor: 'pointer', textDecoration: 'underline'}} onMouseOver={(e) => e.currentTarget.style.textDecoration = 'none'} onMouseOut={(e) => e.currentTarget.style.textDecoration = 'underline'}>
                       Did you mean part <strong>"{rawQuery}"</strong>?
