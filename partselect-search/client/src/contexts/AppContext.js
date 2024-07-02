@@ -121,7 +121,6 @@ export const AppProvider = ({ children }) => {
                   if (response.data.matched_models && response.data.matched_models.length > 0) {
                       setMatchedModels(response.data.matched_models);
                       setSelectModelNum(true);
-                      console.log(response.data.response_type)
                       if (!(response.data.matched_models.length === 1 && response.data.response_type === "PARTS_FOR_MATCHING_MODELS")) {
                         allFacets["Model Number"] = [];
                         response.data.matched_models
@@ -138,7 +137,6 @@ export const AppProvider = ({ children }) => {
                   if (response.data.matched_models && response.data.matched_models.length <=modelTop) {
                       setEndOfModelList(true);
                   }
-                  console.log("Facets: ", allFacets)
                   setFacets(allFacets);
                   setResultCount(response.data.count);
                   if (response.data.raw_query) {
@@ -182,7 +180,6 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
     if (preSelectedFilters && preSelectedFilters.length > 0) {
         setFilters(preSelectedFilters);
-        console.log(preSelectedFilters);
     }
     }, [preSelectedFilters]);
 
@@ -286,7 +283,6 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
       const searchdesc = createUserSearchDescription();
-      console.log("SEARCH DESC: ", searchdesc)
         setUserSearchDesc(searchdesc);
     }, [keywords,resultCount,selectModelNum,modelNumSearch,exactModelMatch,modelNameDesc,filterDesc,matchedModels,preSelectedFlag,preSelectedFilterDesc,rawQuery,responseType]);
 
@@ -330,7 +326,6 @@ export const AppProvider = ({ children }) => {
     }
     
     function createUserSearchDescription() {
-      console.log(`Raw Query: ${rawQuery}, ResponseType: ${responseType}, Keywords: ${keywords}, ModelNumSearch: ${modelNumSearch}, modelName: ${modelNameDesc}`)
       if (rawQuery && keywords && keywords.length > 0 && keywords !== "*") {
           if (responseType==="PARTS_MATCHING_QUERY"){
             if (selectModelNum) {
@@ -381,7 +376,6 @@ export const AppProvider = ({ children }) => {
             }
           }
           else if (responseType==="PARTS_FOR_MATCHING_MODELS") {
-            console.log("Here 1")
             if (selectModelNum) {
               if (matchedModels.length === 1 && (exactModelMatch || modelNumSearch) && modelNameDesc) {
                 return (
@@ -412,7 +406,6 @@ export const AppProvider = ({ children }) => {
           }
       }
       else {
-        console.log("Here 2")
         if (responseType==="PARTS_FOR_MATCHING_MODELS") {
           if (selectModelNum) {
             if (matchedModels.length === 1 && (exactModelMatch || modelNumSearch) && modelNameDesc) {
