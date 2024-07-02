@@ -63,6 +63,7 @@ export default function Facets() {
       })
       .map((key) => {
         return (
+          <div id={key === "Model Number" ? "ModelNumber" : undefined} key={key}>
           <CheckboxFacet
             key={key}
             name={key}
@@ -72,6 +73,7 @@ export default function Facets() {
             mapFacetName={mapFacetName}
             selectedFacets={filters && filters.filter((f) => f.field === key)}
           />
+          </div>
         );
       });
   } catch (error) {

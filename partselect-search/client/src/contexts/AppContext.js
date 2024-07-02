@@ -155,11 +155,11 @@ export const AppProvider = ({ children }) => {
                       setPreSelectedFlag(true);
                       setPreSelectedFilterDesc(describePreSelectedFilters(response.data.preselectedFilters));
                   }
-                  if (response.data.keywords.toLowerCase() !== q.toLowerCase()) {
-                      setKeywords(response.data.keywords);
-                  }
                   if (response.data.response_type) {
                     setResponseType(response.data.response_type);
+                  }
+                  if (response.data.keywords && response.data.keywords.toLowerCase() !== q.toLowerCase()) {
+                    setKeywords(response.data.keywords);
                   }
                   setIsLoading(false);
                 }
@@ -234,6 +234,14 @@ export const AppProvider = ({ children }) => {
           setExactModelMatch(true);
           setModelNameDesc(`${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]} ${model["MfgModelNum"] === "nan" ? "" : `(${model["MfgModelNum"].replace(/[()]/g, "")})`}`);
       }
+      else if (matchedModels && matchedModels.length === 1 
+        && (keywords && keywords.toLowerCase().includes(matchedModels[0]["ModelNum"].toLowerCase()))
+        && responseType === "PARTS_FOR_MATCHING_MODELS"
+        ) {
+          let model = matchedModels[0];
+          setExactModelMatch(true);
+          setModelNameDesc(`${keywords} (${model["ModelNum"]} ${model["BrandName"]} ${model["EquipmentType"]}${model["MfgModelNum"] === "nan" ? "" : ` (${model["MfgModelNum"].replace(/[()]/g, "")})`})`);
+      }
       else {
         setExactModelMatch(false);
       }
@@ -255,6 +263,7 @@ export const AppProvider = ({ children }) => {
         setSelectModelNum(false);
         setTokenize(true);
         setResponseType("");
+        setPreSelectedFilterDesc("");
         if (!filters) {
           setFilters([]);
         }
@@ -276,8 +285,10 @@ export const AppProvider = ({ children }) => {
     }, [q, modelNumSearch]);
 
     useEffect(() => {
-        setUserSearchDesc(createUserSearchDescription());
-    }, [keywords,resultCount,selectModelNum,modelNumSearch,modelNameDesc,filterDesc,matchedModels,preSelectedFlag,preSelectedFilterDesc,rawQuery,responseType]);
+      const searchdesc = createUserSearchDescription();
+      console.log("SEARCH DESC: ", searchdesc)
+        setUserSearchDesc(searchdesc);
+    }, [keywords,resultCount,selectModelNum,modelNumSearch,exactModelMatch,modelNameDesc,filterDesc,matchedModels,preSelectedFlag,preSelectedFilterDesc,rawQuery,responseType]);
 
     const navigateToSearchPage = (searchTerm) => {
       if (!searchTerm || searchTerm === '') {
@@ -304,10 +315,10 @@ export const AppProvider = ({ children }) => {
       });
       const parts = [];
       if (brand) {
-        parts.push(`"${brand}" brand`);
+        parts.push(`brand: "${brand}"`);
       }
       if (equipment) {
-        parts.push(`"${equipment}" equipment`);
+        parts.push(`equipment: "${equipment}"`);
       }
       return parts.join(' and ');
     }
@@ -319,97 +330,119 @@ export const AppProvider = ({ children }) => {
     }
     
     function createUserSearchDescription() {
-      if (keywords && keywords.length > 0 && keywords !== "*") {
-        if (resultCount === 0 || resultCount === TOTAL_RES_COUNT) {
-          if (selectModelNum) {
-            return (
-              <>
-                <h4>{matchedModels.length} models matched your search: <u>{keywords.trim().replaceAll("*", '')}</u></h4>
-                <hr/>
-                <h6>Please select a model number from the filter panel for the best results.</h6>
-              </>
-            );
-          } else {
-            if(!modelNumSearch) {
-              return (
-                <>
-                  <h4>No results found for your search: <u>{keywords.trim().replaceAll("*", '')}</u></h4>
-                  <hr/>
-                </>
-              );
-            } else {
-              return (
-                <>
-                  <h4>No parts found for model: <u>{modelNameDesc}</u></h4>
-                  <hr/>
-                </>
-              );
-            }
-          }
-        } else {
-          if (modelNameDesc !== "") {
-            return (
-              <>
-                <h3>{modelNameDesc} Parts</h3>
-                <hr/>
-              </>
-            );
-          } else {
+      console.log(`Raw Query: ${rawQuery}, ResponseType: ${responseType}, Keywords: ${keywords}, ModelNumSearch: ${modelNumSearch}, modelName: ${modelNameDesc}`)
+      if (rawQuery && keywords && keywords.length > 0 && keywords !== "*") {
+          if (responseType==="PARTS_MATCHING_QUERY"){
             if (selectModelNum) {
               return (
                 <>
-                  <h4>{matchedModels.length} models matched your search: <u>{keywords.trim().replaceAll("*", '')}</u></h4>
+                  <h4>{resultCount} {resultCount === 1? "part" : "parts"} {matchedModels && "and " + matchedModels.length} {matchedModels && <a href="#ModelNumber">{matchedModels.length === 1? "model" : "models"}</a>} {preSelectedFilterDesc!=="" ? "for" : ""} {preSelectedFilterDesc} matched your search: <u>{rawQuery.trim().replaceAll("*", '')}</u></h4>
                   <hr/>
-                  <h6>Please select a model number from the filter panel for the best results.</h6>
                 </>
               );
-            } else {
+            }
+            else {
               if (preSelectedFlag && rawQuery) {
-                console.log("Keywords: ", keywords)
                 return (
-                  <>
-                    <h4>You searched for {keywords && keywords!=="" && <strong>"{keywords.trim().replaceAll("*", '').toLowerCase()}"</strong>} parts for {preSelectedFilterDesc}</h4>
-                    <hr/>
-                    <h6><span onClick={undoTokenize} style={{cursor: 'pointer', textDecoration: 'underline'}} onMouseOver={(e) => e.currentTarget.style.textDecoration = 'none'} onMouseOut={(e) => e.currentTarget.style.textDecoration = 'underline'}>
-                      Did you mean part <strong>"{rawQuery}"</strong>?
-                    </span></h6>
-                  </>
+                  <div>
+                    <h4>
+                      {resultCount} {resultCount === 1 ? "part" : "parts"} 
+                      {matchedModels && " and " + matchedModels.length} 
+                      {matchedModels && (
+                        <a href="#ModelNumber">
+                          {matchedModels.length === 1 ? " model" : " models"}
+                        </a>
+                      )} 
+                      {preSelectedFilterDesc !== "" ? " for " : ""} 
+                      {preSelectedFilterDesc} matched your search: <u>{rawQuery.trim().replaceAll("*", "")}</u>
+                    </h4>
+                    <hr />
+                    <h6>
+                      <span
+                        onClick={undoTokenize}
+                        style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                        onMouseOver={(e) => e.currentTarget.style.textDecoration = 'none'}
+                        onMouseOut={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                      >
+                        Did you mean part <strong>"{rawQuery}"</strong>?
+                      </span>
+                    </h6>
+                  </div>
                 );
-              } else {
-                return (
-                  <>
-                    <h4>You searched for: <strong><u>{keywords.trim().replaceAll("*", '')}</u></strong></h4>
-                  </>
-                );
+              }
+              else {
+              return (
+                <>
+                  <h4>{resultCount} {resultCount === 1? "part" : "parts"} {preSelectedFilterDesc!=="" ? "for" : ""} {preSelectedFilterDesc} matched your search: <u>{rawQuery.trim().replaceAll("*", '')}</u></h4>
+                  <hr/>
+                </>
+              );
               }
             }
           }
+          else if (responseType==="PARTS_FOR_MATCHING_MODELS") {
+            console.log("Here 1")
+            if (selectModelNum) {
+              if (matchedModels.length === 1 && (exactModelMatch || modelNumSearch) && modelNameDesc) {
+                return (
+                  <>
+                    <h4>{resultCount} {resultCount === 1? "part result" : "part results"} for <strong>{modelNameDesc}</strong></h4>
+                    <hr/>
+                  </>
+                );
+              }
+              else {
+               
+                return (
+                  <>
+                    <h4>{resultCount} {resultCount === 1? "part" : "parts"} for {matchedModels.length} <a href="#ModelNumber">{matchedModels.length === 1? "model" : "models"}</a> {preSelectedFilterDesc!=="" ? "for" : ""} {preSelectedFilterDesc} matched your search: <u>{rawQuery.trim().replaceAll("*", '')}</u></h4>
+                    <hr/>
+                  </>
+                );
+            }
+            }
+            else {
+              return (
+                <>
+                  <h4>{resultCount} {resultCount === 1? "part" : "parts"} {preSelectedFilterDesc!=="" ? "for" : ""} {preSelectedFilterDesc} matched your search: <u>{rawQuery.trim().replaceAll("*", '')}</u></h4>
+                  <hr/>
+                </>
+              );
+            }
+          }
+      }
+      else {
+        console.log("Here 2")
+        if (responseType==="PARTS_FOR_MATCHING_MODELS") {
+          if (selectModelNum) {
+            if (matchedModels.length === 1 && (exactModelMatch || modelNumSearch) && modelNameDesc) {
+              return (
+                <>
+                  <h4>{resultCount} {resultCount === 1? "part result" : "part results"} for <strong>{modelNameDesc}</strong></h4>
+                  <hr/>
+                </>
+              );
+            }
+            else {
+             
+              return (
+                <>
+                  <h4>{resultCount} {resultCount === 1? "part" : "parts"} for {matchedModels.length} {preSelectedFilterDesc!=="" ? "for" : ""} {preSelectedFilterDesc} {matchedModels.length === 1? "model" : "models"} matched your search: <u>{rawQuery.trim().replaceAll("*", '')}</u></h4>
+                  <hr/>
+                </>
+              );
+          }
+          }
+          else {
+            return (
+              <>
+                <h4>{resultCount} {resultCount === 1? "part" : "parts"} {preSelectedFilterDesc!=="" ? "for" : ""} {preSelectedFilterDesc} matched your search: <u>{rawQuery.trim().replaceAll("*", '')}</u></h4>
+                <hr/>
+              </>
+            );
+          }
         }
-      } else if (keywords === "*") {
-        return (
-          <>
-            <h2>{(!filterDesc || filterDesc.length === 0) ? "Showing All Results" : `All ${filterDesc} Parts`}</h2>
-            <hr/>
-          </>
-        );
-      } else if (filterDesc && filterDesc.length > 0) {
-        if (preSelectedFlag) {
-          return (
-            <>
-              <h2>{filterDesc} Parts</h2>
-              <hr/>
-              <h6><span onClick={undoTokenize} style={{cursor: 'pointer', textDecoration: 'underline'}} onMouseOver={(e) => e.currentTarget.style.textDecoration = 'none'} onMouseOut={(e) => e.currentTarget.style.textDecoration = 'underline'}>
-                Did you mean part <strong>"{rawQuery}"</strong>?
-              </span></h6>
-            </>
-          );
-        } else {
-          return (
-            <>
-              <h2>{filterDesc} Parts</h2>
-            </>
-          );
-        }
+
       }
     }     
 
